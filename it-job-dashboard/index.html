@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Career Match - Job Finder Dashboard</title>
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js for visualizations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="styles.css">
+    
+</head>
+<body>
+    <div class="container">
+        <!-- Header with navigation -->
+        <header>
+            <div class="logo">
+                <i class="fas fa-laptop-code"></i>
+                <h1>IT Career Match</h1>
+            </div>
+            <nav>
+                <div class="nav-item active" data-content="dashboard">Dashboard</div>
+                <div class="nav-item" data-content="job-matches">Job Matches</div>
+                <div class="nav-item" data-content="skill-analysis">Skill Analysis</div>
+                <div class="nav-item" data-content="profile">My Profile</div>
+            </nav>
+        </header>
+
+        <!-- Dashboard content -->
+        <div id="dashboard-content" class="content active">
+            <div class="welcome-banner">
+                <div class="welcome-text">
+                    <h2>Welcome back, <span id="user-name">IT Professional</span>!</h2>
+                    <p>You have <span class="highlight" id="new-matches-count">0 new job matches</span> based on your profile.</p>
+                </div>
+                <div class="profile-completion">
+                    <div class="progress-circle" data-percentage="85">
+                        <svg class="progress-ring" width="120" height="120">
+                            <circle class="progress-ring-circle-bg" stroke="#ecf0f1" stroke-width="10" fill="transparent" r="50" cx="60" cy="60"/>
+                            <circle class="progress-ring-circle" stroke="#3498db" stroke-width="10" fill="transparent" r="50" cx="60" cy="60"/>
+                        </svg>
+                        <div class="progress-text">85%</div>
+                    </div>
+                    <p>Profile Completion</p>
+                </div>
+            </div>
+
+            <!-- Career Snapshot -->
+            <div class="section-header">
+                <h3>Your Career Snapshot</h3>
+                <button class="update-btn" id="load-data-btn"><i class="fas fa-sync-alt"></i> Load Data</button>
+            </div>
+
+            <div class="metrics-container">
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-briefcase"></i></div>
+                    <div class="metric-body">
+                        <div class="metric-value" style="color: #3498db;" id="match-percentage">--</div>
+                        <div class="metric-label">Match with top jobs</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-code"></i></div>
+                    <div class="metric-body">
+                        <div class="metric-value" style="color: #2ecc71;" id="skills-count">--</div>
+                        <div class="metric-label">Total skills</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-tools"></i></div>
+                    <div class="metric-body">
+                        <div class="metric-value" style="color: #e74c3c;" id="avg-experience">--</div>
+                        <div class="metric-label">Avg. years experience</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon"><i class="fas fa-file-alt"></i></div>
+                    <div class="metric-body">
+                        <div class="metric-value" style="color: #9b59b6;" id="avg-salary">--</div>
+                        <div class="metric-label">Avg. salary</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Job Matches -->
+            <div class="section-header">
+                <h3>Top Job Matches</h3>
+                <a href="#" class="view-all" data-nav="job-matches">View All <i class="fas fa-chevron-right"></i></a>
+            </div>
+
+            <div class="jobs-grid" id="top-jobs-container">
+                <!-- Job cards will be dynamically inserted here -->
+                <div class="loading">Loading job matches...</div>
+            </div>
+
+            <!-- Skills Analysis -->
+            <div class="section-header">
+                <h3>Skills Analysis</h3>
+                <a href="#" class="view-all" data-nav="skill-analysis">View Details <i class="fas fa-chevron-right"></i></a>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>Most Common Skills</div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="skills-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>Salary Ranges by Role</div>
+                    </div>
+                    <div class="chart-body">
+                        <canvas id="salary-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Matches content -->
+        <div id="job-matches-content" class="content">
+            <div class="section-header">
+                <h2>Job Matches</h2>
+            </div>
+
+            <div class="search-filters">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search job titles, skills, or roles..." id="job-search-input">
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <label>Job Role</label>
+                        <select id="role-filter">
+                            <option value="all">All Roles</option>
+                            <!-- Role options will be dynamically added -->
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Location</label>
+                        <select id="location-filter">
+                            <option value="all">All Locations</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-Site</option>
+                        </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label>Experience</label>
+                        <select id="experience-filter">
+                            <option value="all">All Levels</option>
+                            <option value="2-4">2-4 years</option>
+                            <option value="5-7">5-7 years</option>
+                            <option value="8+">8+ years</option>
+                        </select>
+                    </div>
+                    
+                    <button class="filter-button" id="apply-filters-btn">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <div class="job-results" id="all-jobs-container">
+                <!-- Job listings will be loaded here dynamically -->
+                <div class="loading">Loading job matches...</div>
+            </div>
+        </div>
+
+        <!-- Skill Analysis content -->
+        <div id="skill-analysis-content" class="content">
+            <div class="section-header">
+                <h2>Skill Analysis</h2>
+            </div>
+
+            <div class="skills-dashboard">
+                <div class="skill-analysis-card">
+                    <div class="card-header">
+                        <h3>Skills Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="skill-radar-chart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="skill-analysis-card">
+                    <div class="card-header">
+                        <h3>Top Skills by Role</h3>
+                    </div>
+                    <div class="skill-gaps" id="top-skills-container">
+                        <!-- Skill items will be loaded here -->
+                        <div class="loading">Loading skill analysis...</div>
+                    </div>
+                </div>
+                
+                <div class="skill-analysis-card">
+                    <div class="card-header">
+                        <h3>Education & Certification Impact</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="education-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h3>Salary Distribution by Experience</h3>
+            </div>
+
+            <div class="chart-card full-width">
+                <div class="chart-body">
+                    <canvas id="experience-salary-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile content -->
+        <div id="profile-content" class="content">
+            <div class="profile-header">
+                <div class="profile-photo">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="profile-info">
+                    <h2>IT Professional</h2>
+                    <p>Loading profile data...</p>
+                    <div class="profile-details">
+                        <span><i class="fas fa-map-marker-alt"></i> <span id="location-value">Preferred Location</span></span>
+                        <span><i class="fas fa-graduation-cap"></i> <span id="education-value">Education Level</span></span>
+                    </div>
+                </div>
+                <div class="profile-actions">
+                    <button class="btn-primary" id="import-data-btn"><i class="fas fa-file-import"></i> Import CSV Data</button>
+                    <input type="file" id="csv-file-input" accept=".csv" style="display: none;">
+                </div>
+            </div>
+
+            <div class="profile-sections">
+                <div class="profile-nav">
+                    <div class="profile-nav-item active" data-section="skills">Skills & Expertise</div>
+                    <div class="profile-nav-item" data-section="experience">Experience</div>
+                    <div class="profile-nav-item" data-section="domains">Previous Domains</div>
+                    <div class="profile-nav-item" data-section="preferences">Job Preferences</div>
+                </div>
+
+                <div class="profile-section-content" id="skills-section">
+                    <div class="section-header">
+                        <h3>Skills & Expertise</h3>
+                    </div>
+                    
+                    <div class="skills-list" id="skills-container">
+                        <!-- Skill items will be loaded here -->
+                        <div class="loading">Loading skills data...</div>
+                    </div>
+                </div>
+
+                <div class="profile-section-content hidden" id="experience-section">
+                    <div class="section-header">
+                        <h3>Work Experience</h3>
+                    </div>
+                    
+                    <div class="experience-info">
+                        <div class="experience-stat">
+                            <h4>Years of Experience</h4>
+                            <div class="stat-value" id="years-experience-value">--</div>
+                        </div>
+                        <div class="experience-stat">
+                            <h4>Last Job Duration</h4>
+                            <div class="stat-value" id="last-job-duration-value">--</div>
+                        </div>
+                        <div class="experience-stat">
+                            <h4>Current Salary</h4>
+                            <div class="stat-value" id="current-salary-value">--</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-section-content hidden" id="domains-section">
+                    <div class="section-header">
+                        <h3>Previous Domains</h3>
+                    </div>
+                    
+                    <div class="domains-container" id="domains-container">
+                        <!-- Domain items will be loaded here -->
+                        <div class="loading">Loading domains data...</div>
+                    </div>
+                </div>
+
+                <div class="profile-section-content hidden" id="preferences-section">
+                    <div class="section-header">
+                        <h3>Job Preferences</h3>
+                    </div>
+                    
+                    <div class="preferences-container">
+                        <div class="preference-item">
+                            <h4>Preferred Role</h4>
+                            <div class="preference-value" id="preferred-role-value">--</div>
+                        </div>
+                        <div class="preference-item">
+                            <h4>Location Preference</h4>
+                            <div class="preference-value" id="location-preference-value">--</div>
+                        </div>
+                        <div class="preference-item">
+                            <h4>Has Certifications</h4>
+                            <div class="preference-value" id="certifications-value">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Profile Modal - Add this just before the closing </body> tag -->
+<div id="profile-modal" class="modal">
+  <div class="modal-content">
+      <span class="close">&times;</span>
+      <h2>Complete Your Profile</h2>
+      <p>Please enter your details to find the best job matches</p>
+      
+      <form id="profile-form">
+          <div class="form-group">
+              <label for="user-name">Full Name</label>
+              <input type="text" id="user-name-input" placeholder="Enter your name" required>
+          </div>
+          
+          <div class="form-group">
+              <label for="user-skills">Your Technical Skills</label>
+              <input type="text" id="user-skills" placeholder="e.g. Python, JavaScript, React, AWS (comma separated)" required>
+          </div>
+          
+          <div class="form-group">
+              <label for="user-experience">Years of Experience</label>
+              <input type="number" id="user-experience" min="0" step="0.5" placeholder="e.g. 5.5" required>
+          </div>
+          
+          <div class="form-group">
+              <label for="user-education">Education Level</label>
+              <select id="user-education" required>
+                  <option value="">Select education level</option>
+                  <option value="Bachelor's">Bachelor's Degree</option>
+                  <option value="Master's">Master's Degree</option>
+                  <option value="PhD">PhD</option>
+                  <option value="Associate's">Associate's Degree</option>
+                  <option value="Self-taught">Self-taught</option>
+              </select>
+          </div>
+          
+          <div class="form-group">
+              <label for="user-location">Preferred Location</label>
+              <select id="user-location" required>
+                  <option value="">Select location preference</option>
+                  <option value="Remote">Remote</option>
+                  <option value="Hybrid">Hybrid</option>
+                  <option value="On-site">On-site</option>
+              </select>
+          </div>
+          
+          <div class="form-group">
+              <label for="user-domains">Previous Domains</label>
+              <input type="text" id="user-domains" placeholder="e.g. Healthcare, Finance, E-commerce (comma separated)">
+          </div>
+          
+          <div class="form-group">
+              <label for="user-role">Preferred Role</label>
+              <input type="text" id="user-role" placeholder="e.g. Full Stack Developer" required>
+          </div>
+          
+          <div class="form-group">
+              <label for="user-certifications">Do you have certifications?</label>
+              <select id="user-certifications" required>
+                  <option value="true">Yes</option>
+                  <option value="false">No</option>
+              </select>
+          </div>
+          
+          <div class="form-group">
+              <label for="user-salary">Current/Expected Salary ($)</label>
+              <input type="number" id="user-salary" min="0" step="1000" placeholder="e.g. 100000">
+          </div>
+          
+          <button type="submit" class="btn-primary">Find Matching Jobs</button>
+      </form>
+  </div>
+</div>
+
+    <!-- Custom JavaScript -->
+    <script src="app.js"></script>
+    
+</body>
+</html>
