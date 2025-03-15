@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TechCareerMatch - Smart IT Job Finder</title>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="favicon.png" />
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <!-- Responsive stylesheet -->
+    <link rel="stylesheet" href="css/responsive.css" />
+
+    <!-- Chart.js for data visualization -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+
+    <!-- PapaParse for CSV parsing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.1/papaparse.min.js"></script>
+
+    <!-- LocalForage for client-side storage -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+</head>
+
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <i class="fas fa-laptop-code"></i>
+            <h1>TechCareerMatch</h1>
+        </div>
+
+        <nav>
+            <div class="nav-item active" data-content="dashboard">
+                <i class="fas fa-chart-bar"></i> Dashboard
+            </div>
+            <div class="nav-item" data-content="jobs">
+                <i class="fas fa-briefcase"></i> Job Matches
+            </div>
+            <div class="nav-item" data-content="skills">
+                <i class="fas fa-code"></i> Skill Analysis
+            </div>
+            <div class="nav-item" data-content="roadmap">
+                <i class="fas fa-map-signs"></i> Career Roadmap
+            </div>
+            <div class="nav-item" data-content="profile">
+                <i class="fas fa-user"></i> Profile
+            </div>
+        </nav>
+
+        <div class="user-menu">
+            <span id="user-display-name">Guest</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- Dashboard Content -->
+        <div id="dashboard-content" class="content active">
+            <!-- Welcome Banner -->
+            <div class="welcome-banner">
+                <div class="welcome-text">
+                    <h2>Welcome, <span id="user-name">IT Professional</span>!</h2>
+                    <p>
+                        Complete your profile to get personalized job matches and career
+                        insights. Your profile is currently
+                        <span class="highlight" id="profile-completion-text">45%</span>
+                        complete.
+                    </p>
+                    <button id="update-profile-btn">
+                        <i class="fas fa-user-edit"></i> Update Your Profile
+                    </button>
+                </div>
+
+                <div class="profile-stats">
+                    <div class="progress-circle">
+                        <svg width="120" height="120">
+                            <circle class="progress-ring-circle-bg" cx="60" cy="60" r="54" fill="transparent"
+                                stroke="rgba(255, 255, 255, 0.2)" stroke-width="12"></circle>
+                            <circle class="progress-ring-circle" cx="60" cy="60" r="54" fill="transparent"
+                                stroke="white" stroke-width="12" stroke-dasharray="339.292" stroke-dashoffset="339.292">
+                            </circle>
+                        </svg>
+                        <div class="progress-text">45%</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Metrics -->
+            <div class="section-header">
+                <h2>Key Metrics</h2>
+                <div class="action-buttons">
+                    <button id="refresh-data-btn" class="update-btn">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="metrics-container">
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: rgba(52, 152, 219, 0.1); color: #3498db">
+                        <i class="fas fa-percentage"></i>
+                    </div>
+                    <div class="metric-body">
+                        <div class="metric-value" id="match-percentage">75%</div>
+                        <div class="metric-label">Top Match Score</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <div class="metric-body">
+                        <div class="metric-value" id="skills-count">8</div>
+                        <div class="metric-label">Skills Listed</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: rgba(155, 89, 182, 0.1); color: #9b59b6">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="metric-body">
+                        <div class="metric-value" id="market-demand">82/100</div>
+                        <div class="metric-label">Skills Demand</div>
+                    </div>
+                </div>
+
+                <div class="metric-card">
+                    <div class="metric-icon" style="background-color: rgba(243, 156, 18, 0.1); color: #f39c12">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="metric-body">
+                        <div class="metric-value" id="salary-potential">$95,000</div>
+                        <div class="metric-label">Salary Potential</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Job Matches -->
+            <div class="section-header">
+                <h2>Top Job Matches</h2>
+                <a href="#" class="view-all" data-nav="jobs"><i class="fas fa-arrow-right"></i> View All Matches</a>
+            </div>
+
+            <div class="jobs-grid" id="top-jobs-container">
+                <!-- Job cards will be populated here -->
+            </div>
+
+            <!-- Charts -->
+            <div class="section-header">
+                <h2>Market Insights</h2>
+            </div>
+
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">In-Demand Skills</div>
+                    <div class="chart-body">
+                        <canvas id="skills-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">Salary by Role</div>
+                    <div class="chart-body">
+                        <canvas id="salary-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Career Insights -->
+            <div class="section-header">
+                <h2>Career Insights</h2>
+            </div>
+
+            <div class="insights-container">
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Skill Gap Analysis</h4>
+                        <p id="skill-gap-insight">
+                            Complete your profile to see skill gap insights.
+                        </p>
+                        <a href="#" class="insight-action" data-nav="skills"><i class="fas fa-arrow-right"></i> View
+                            Skill Analysis</a>
+                    </div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="insight-content">
+                        <h4>Market Trends</h4>
+                        <p id="market-trends-insight">
+                            Complete your profile to see market trend insights.
+                        </p>
+                        <a href="#" class="insight-action" data-nav="roadmap"><i class="fas fa-arrow-right"></i> View
+                            Career Roadmap</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Job Matches Content -->
+        <div id="jobs-content" class="content">
+            <div class="section-header">
+                <h2>Job Matches</h2>
+                <div id="new-matches-count" class="match-badge">12 job matches</div>
+            </div>
+
+            <div class="search-filters">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="job-search-input" placeholder="Search for jobs, companies, or skills..." />
+                </div>
+
+                <div class="filters">
+                    <div class="filter-group">
+                        <label for="role-filter">Role</label>
+                        <select id="role-filter">
+                            <option value="all">All Roles</option>
+                            <option value="Full Stack Developer">
+                                Full Stack Developer
+                            </option>
+                            <option value="Frontend Developer">Frontend Developer</option>
+                            <option value="Backend Developer">Backend Developer</option>
+                            <option value="Data Scientist">Data Scientist</option>
+                            <option value="DevOps Engineer">DevOps Engineer</option>
+                            <option value="Mobile Developer">Mobile Developer</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="location-filter">Location</label>
+                        <select id="location-filter">
+                            <option value="all">All Locations</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-site</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="experience-filter">Experience</label>
+                        <select id="experience-filter">
+                            <option value="all">Any Experience</option>
+                            <option value="0-2">0-2 years</option>
+                            <option value="2-5">2-5 years</option>
+                            <option value="5-8">5-8 years</option>
+                            <option value="8+">8+ years</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="salary-filter">Salary Range</label>
+                        <select id="salary-filter">
+                            <option value="all">Any Salary</option>
+                            <option value="0-50000">Up to $50,000</option>
+                            <option value="50000-80000">$50,000 - $80,000</option>
+                            <option value="80000-120000">$80,000 - $120,000</option>
+                            <option value="120000+">$120,000+</option>
+                        </select>
+                    </div>
+
+                    <button id="apply-filters-btn" class="filter-button">
+                        <i class="fas fa-filter"></i> Apply Filters
+                    </button>
+                </div>
+            </div>
+
+            <div class="job-results">
+                <div id="all-jobs-container">
+                    <!-- Job cards will be populated here -->
+                </div>
+
+                <div class="pagination-container">
+                    <button id="prev-page" class="pagination-btn" disabled>
+                        <i class="fas fa-chevron-left"></i> Previous
+                    </button>
+                    <div id="page-indicator">Page 1 of 1</div>
+                    <button id="next-page" class="pagination-btn" disabled>
+                        Next <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skill Analysis Content -->
+        <div id="skills-content" class="content">
+            <div class="section-header">
+                <h2>Skill Analysis</h2>
+                <div class="action-buttons">
+                    <button id="add-skill-btn" class="add-btn">
+                        <i class="fas fa-plus"></i> Add Skill
+                    </button>
+                    <button id="import-data-btn" class="update-btn">
+                        <i class="fas fa-file-import"></i> Import Data
+                    </button>
+                </div>
+            </div>
+
+            <div class="skills-dashboard">
+                <div class="skill-analysis-card">
+                    <div class="card-header">
+                        <h3>Skill Distribution</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="skill-radar-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="skill-analysis-card">
+                    <div class="card-header">
+                        <h3>Skill Gaps for Target Role</h3>
+                    </div>
+                    <div class="skill-gaps" id="skill-gaps-container">
+                        <!-- Skill gap items will be populated here -->
+                    </div>
+                </div>
+
+                <div class="skill-analysis-card">
+                    <div class="card-header">
+                        <h3>Your Skills Value</h3>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="skill-value-chart"></canvas>
+                    </div>
+                </div>
+
+                <div class="skill-analysis-card">
+                    <div class="card-header">
+                        <h3>Target Role Requirements</h3>
+                    </div>
+                    <div class="skill-gaps" id="target-skills-container">
+                        <!-- Target skills will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2>Recommended Learning Paths</h2>
+            </div>
+
+            <div class="learning-paths-container" id="learning-paths-container">
+                <!-- Learning path cards will be populated here -->
+            </div>
+        </div>
+
+        <!-- Career Roadmap Content -->
+        <div id="roadmap-content" class="content">
+            <div class="section-header">
+                <h2>Career Roadmap</h2>
+            </div>
+
+            <div class="roadmap-container">
+                <div class="roadmap-sidebar">
+                    <h3>Career Path</h3>
+                    <div id="career-path-container">
+                        <!-- Career path steps will be populated here -->
+                    </div>
+                </div>
+
+                <div class="roadmap-content">
+                    <div class="roadmap-header">
+                        <h3>Skill Development Timeline</h3>
+                        <select id="timeline-filter">
+                            <option value="6">Next 6 months</option>
+                            <option value="12" selected>Next 12 months</option>
+                            <option value="18">Next 18 months</option>
+                            <option value="24">Next 24 months</option>
+                        </select>
+                    </div>
+
+                    <div id="roadmap-timeline" class="roadmap-timeline">
+                        <!-- Roadmap timeline items will be populated here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-header">
+                <h2>Experience & Salary Relationship</h2>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">Experience Impact on Salary</div>
+                <div class="chart-body">
+                    <canvas id="experience-salary-chart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Content -->
+        <div id="profile-content" class="content">
+            <div class="profile-header">
+                <div class="profile-photo">
+                    <i>TP</i>
+                </div>
+
+                <div class="profile-info">
+                    <h2 id="profile-name">IT Professional</h2>
+                    <p id="profile-headline">
+                        Complete your profile to see personalized data
+                    </p>
+                    <div class="profile-details">
+                        <span><i class="fas fa-map-marker-alt"></i>
+                            <span id="location-value">Not specified</span></span>
+                        <span><i class="fas fa-graduation-cap"></i>
+                            <span id="education-value">Not specified</span></span>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <button id="edit-profile-btn" class="btn-primary">
+                        <i class="fas fa-user-edit"></i> Edit Profile
+                    </button>
+                    <button id="export-profile-btn" class="btn-secondary">
+                        <i class="fas fa-file-export"></i> Export
+                    </button>
+                </div>
+            </div>
+
+            <div class="profile-sections">
+                <div class="profile-nav">
+                    <div class="profile-nav-item active" data-section="skills">
+                        Skills
+                    </div>
+                    <div class="profile-nav-item" data-section="experience">
+                        Experience
+                    </div>
+                    <div class="profile-nav-item" data-section="domains">Domains</div>
+                    <div class="profile-nav-item" data-section="preferences">
+                        Preferences
+                    </div>
+                    <div class="profile-nav-item" data-section="analytics">
+                        Analytics
+                    </div>
+                </div>
+
+                <div id="skills-section" class="profile-section-content">
+                    <div class="section-header">
+                        <h3>Technical Skills</h3>
+                        <button id="add-skill-btn" class="add-btn">
+                            <i class="fas fa-plus"></i> Add Skill
+                        </button>
+                    </div>
+
+                    <div class="skills-list" id="skills-container">
+                        <!-- Skills will be populated here -->
+                    </div>
+                </div>
+
+                <div id="experience-section" class="profile-section-content hidden">
+                    <div class="section-header">
+                        <h3>Experience Overview</h3>
+                    </div>
+
+                    <div class="experience-info">
+                        <div class="experience-stat">
+                            <h4>Years of Experience</h4>
+                            <div class="stat-value" id="years-experience-value">
+                                5.5 years
+                            </div>
+                        </div>
+
+                        <div class="experience-stat">
+                            <h4>Current Salary</h4>
+                            <div class="stat-value" id="current-salary-value">$85,000</div>
+                        </div>
+
+                        <div class="experience-stat">
+                            <h4>Experience Level</h4>
+                            <div class="stat-value">Mid-Level</div>
+                        </div>
+                    </div>
+
+                    <div class="section-header">
+                        <h3>Work History</h3>
+                        <button id="add-experience-btn" class="add-btn">
+                            <i class="fas fa-plus"></i> Add Experience
+                        </button>
+                    </div>
+
+                    <div class="experience-timeline" id="experience-timeline">
+                        <!-- Experience timeline will be populated here -->
+                    </div>
+                </div>
+
+                <div id="domains-section" class="profile-section-content hidden">
+                    <div class="section-header">
+                        <h3>Industry Domains</h3>
+                        <button id="add-domain-btn" class="add-btn">
+                            <i class="fas fa-plus"></i> Add Domain
+                        </button>
+                    </div>
+
+                    <div class="domains-container" id="domains-container">
+                        <!-- Domains will be populated here -->
+                    </div>
+
+                    <div class="domains-chart-container">
+                        <canvas id="domains-chart"></canvas>
+                    </div>
+                </div>
+
+                <div id="preferences-section" class="profile-section-content hidden">
+                    <div class="section-header">
+                        <h3>Job Preferences</h3>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-item">
+                            <h4>Preferred Role</h4>
+                            <div class="preference-value" id="preferred-role-value">
+                                Not specified
+                            </div>
+                        </div>
+                        <button class="edit-preference" data-field="preferred-role">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-item">
+                            <h4>Location Preference</h4>
+                            <div class="preference-value" id="location-preference-value">
+                                Not specified
+                            </div>
+                        </div>
+                        <button class="edit-preference" data-field="location-preference">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-item">
+                            <h4>Salary Expectation</h4>
+                            <div class="preference-value" id="salary-preference-value">
+                                Not specified
+                            </div>
+                        </div>
+                        <button class="edit-preference" data-field="salary-preference">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-item">
+                            <h4>Work Type</h4>
+                            <div class="preference-value" id="work-type-value">
+                                Not specified
+                            </div>
+                        </div>
+                        <button class="edit-preference" data-field="work-type">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-item">
+                            <h4>Certifications</h4>
+                            <div class="preference-value" id="certifications-value">No</div>
+                        </div>
+                        <button class="edit-preference" data-field="certifications">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div id="analytics-section" class="profile-section-content hidden">
+                    <div class="section-header">
+                        <h3>Profile Analytics</h3>
+                    </div>
+
+                    <div class="analytics-container">
+                        <div class="analytics-card">
+                            <h4>Profile Strength</h4>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="profile-strength-bar" style="width: 65%"></div>
+                                <div class="progress-label" id="profile-strength-label">
+                                    65%
+                                </div>
+                            </div>
+                            <ul class="analytics-suggestions" id="profile-strength-suggestions">
+                                <!-- Suggestions will be populated here -->
+                            </ul>
+                        </div>
+
+                        <div class="analytics-card">
+                            <h4>Market Competitiveness</h4>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="market-competitiveness-bar" style="width: 78%"></div>
+                                <div class="progress-label" id="market-competitiveness-label">
+                                    78%
+                                </div>
+                            </div>
+                            <ul class="analytics-suggestions" id="market-competitiveness-suggestions">
+                                <!-- Suggestions will be populated here -->
+                            </ul>
+                        </div>
+
+                        <div class="analytics-card">
+                            <h4>Growth Potential</h4>
+                            <div class="progress-container">
+                                <div class="progress-bar" id="growth-potential-bar" style="width: 82%"></div>
+                                <div class="progress-label" id="growth-potential-label">
+                                    82%
+                                </div>
+                            </div>
+                            <ul class="analytics-suggestions" id="growth-potential-suggestions">
+                                <!-- Suggestions will be populated here -->
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Profile Modal -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Your Profile</h2>
+            <div class="form-tabs">
+                <div class="form-tab active" data-tab="basic-info">Basic Info</div>
+                <div class="form-tab" data-tab="skills-experience">
+                    Skills & Experience
+                </div>
+                <div class="form-tab" data-tab="preferences">Preferences</div>
+            </div>
+
+            <form id="profile-form">
+                <!-- Basic Info Tab -->
+                <div id="basic-info-tab" class="form-tab-content active">
+                    <div class="form-group">
+                        <label for="user-name-input">Full Name</label>
+                        <input type="text" id="user-name-input" placeholder="Your name" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-email">Email</label>
+                        <input type="email" id="user-email" placeholder="Your email" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-location-input">Location</label>
+                        <input type="text" id="user-location-input" placeholder="City, State or Country" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-education">Education Level</label>
+                        <select id="user-education">
+                            <option value="">Select Education Level</option>
+                            <option value="High School">High School</option>
+                            <option value="Associate's">Associate's Degree</option>
+                            <option value="Bachelor's">Bachelor's Degree</option>
+                            <option value="Master's">Master's Degree</option>
+                            <option value="PhD">PhD or Doctorate</option>
+                            <option value="Self-taught">Self-taught</option>
+                            <option value="Bootcamp">Coding Bootcamp</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-linkedin">LinkedIn URL (optional)</label>
+                        <input type="text" id="user-linkedin" placeholder="Your LinkedIn profile URL" />
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary">Cancel</button>
+                        <button type="button" class="btn-primary next-tab" data-next="skills-experience">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Skills & Experience Tab -->
+                <div id="skills-experience-tab" class="form-tab-content">
+                    <div class="form-group">
+                        <label for="user-skills">Technical Skills (comma separated)</label>
+                        <textarea id="user-skills" placeholder="e.g., JavaScript, React, Python, SQL, AWS"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-experience">Years of Experience</label>
+                        <input type="number" id="user-experience" step="0.5" min="0" placeholder="e.g., 3.5" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-job-title">Current Job Title</label>
+                        <input type="text" id="user-job-title" placeholder="e.g., Software Developer" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-domains">Industry Domains (comma separated)</label>
+                        <input type="text" id="user-domains" placeholder="e.g., E-commerce, Healthcare, Finance" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-current-salary">Current Salary ($)</label>
+                        <input type="number" id="user-current-salary" placeholder="e.g., 85000" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Do you have any certifications?</label>
+                        <select id="user-certifications">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary prev-tab" data-prev="basic-info">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="button" class="btn-primary next-tab" data-next="preferences">
+                            Next <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Preferences Tab -->
+                <div id="preferences-tab" class="form-tab-content">
+                    <div class="form-group">
+                        <label for="user-role">Target Role</label>
+                        <input type="text" id="user-role" placeholder="e.g., Senior Developer, Data Scientist" />
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-location-preference">Location Preference</label>
+                        <select id="user-location-preference">
+                            <option value="">Select Location Preference</option>
+                            <option value="Remote">Remote</option>
+                            <option value="Hybrid">Hybrid</option>
+                            <option value="On-site">On-site</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-work-type">Preferred Work Type</label>
+                        <select id="user-work-type">
+                            <option value="">Select Work Type</option>
+                            <option value="Full-time">Full-time</option>
+                            <option value="Part-time">Part-time</option>
+                            <option value="Contract">Contract</option>
+                            <option value="Freelance">Freelance</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="user-salary-expectation">Expected Salary ($)</label>
+                        <input type="number" id="user-salary-expectation" placeholder="e.g., 100000" />
+                    </div>
+
+                    <div class="form-group">
+                        <label>Are you willing to relocate?</label>
+                        <select id="user-willing-to-relocate">
+                            <option value="false">No</option>
+                            <option value="true">Yes</option>
+                        </select>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary prev-tab" data-prev="skills-experience">
+                            <i class="fas fa-arrow-left"></i> Previous
+                        </button>
+                        <button type="submit" class="btn-primary">Save Profile</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Skill Modal -->
+    <div id="add-skill-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add New Skill</h2>
+            <form id="add-skill-form">
+                <div class="form-group">
+                    <label for="skill-name">Skill Name</label>
+                    <input type="text" id="skill-name" required placeholder="e.g., React, Python, AWS" />
+                </div>
+
+                <div class="form-group">
+                    <label for="skill-level">Skill Level</label>
+                    <select id="skill-level" required>
+                        <option value="">Select Level</option>
+                        <option value="Beginner">Beginner</option>
+                        <option value="Intermediate">Intermediate</option>
+                        <option value="Advanced">Advanced</option>
+                        <option value="Expert">Expert</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="skill-experience">Years of Experience</label>
+                    <input type="number" id="skill-experience" step="0.5" min="0" placeholder="e.g., 2.5" />
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Skill</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Experience Modal -->
+    <div id="add-experience-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Add Work Experience</h2>
+            <form id="add-experience-form">
+                <div class="form-group">
+                    <label for="job-title">Job Title</label>
+                    <input type="text" id="job-title" required placeholder="e.g., Software Developer" />
+                </div>
+
+                <div class="form-group">
+                    <label for="company-name">Company</label>
+                    <input type="text" id="company-name" required placeholder="e.g., TechCorp Inc." />
+                </div>
+
+                <div class="form-group">
+                    <label for="job-start-date">Start Date</label>
+                    <input type="date" id="job-start-date" required />
+                </div>
+
+                <div class="form-group">
+                    <label for="job-end-date">End Date</label>
+                    <input type="date" id="job-end-date" />
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="current-position" />
+                    <label for="current-position">I currently work here</label>
+                </div>
+
+                <div class="form-group">
+                    <label for="job-description">Job Description</label>
+                    <textarea id="job-description"
+                        placeholder="Describe your responsibilities and achievements..."></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary">Cancel</button>
+                    <button type="submit" class="btn-primary">Add Experience</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Job Details Modal -->
+    <div id="job-details-modal" class="modal">
+        <div class="modal-content job-details-content">
+            <span class="close">&times;</span>
+            <div id="job-details-container">
+                <!-- Job details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container"></div>
+
+    <!-- Hidden file input for CSV import -->
+    <input type="file" id="csv-file-input" accept=".csv" style="display: none" />
+
+    <!-- JavaScript Files -->
+    <script src="js/config.js"></script>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/matching.js"></script>
+    <script src="js/roadmap.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/app.js"></script>
+</body>
+
+</html>
