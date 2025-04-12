@@ -1083,29 +1083,7 @@ function fixProfileFormSubmission() {
       // Check if resume is uploaded
       const resumeStatus = document.getElementById('resume-status');
       const hasResume = resumeStatus && resumeStatus.querySelector('.resume-file');
-      
-      // Determine if minimal validation is enough (resume uploaded)
-      if (!hasResume) {
-        // Full validation for non-resume mode
-        const fullRequiredFields = [
-          { id: 'user-job-title', label: 'Job Title' },
-          { id: 'user-experience', label: 'Experience' },
-          { id: 'user-role', label: 'Target Role' }
-        ];
-        
-        fullRequiredFields.forEach(field => {
-          const input = document.getElementById(field.id);
-          if (!input || !input.value.trim()) {
-            hasErrors = true;
-            showNotification('Error', `${field.label} is required`, 'error');
-            input?.classList.add('error-field');
-          } else {
-            input.classList.remove('error-field');
-          }
-        });
-        
-        if (hasErrors) return;
-      }
+
       
       // If we have skills, check if they are valid
       if (formData.skills) {

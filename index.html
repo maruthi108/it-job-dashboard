@@ -18,6 +18,8 @@
     <!-- Responsive stylesheet -->
     <link rel="stylesheet" href="css/responsive.css" />
 
+    <link rel="stylesheet" href="css/resume-upload.css" />
+
     <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
 
@@ -62,28 +64,29 @@
     <div class="container">
         <!-- Dashboard Content -->
         <div id="dashboard-content" class="content active">
-<!-- Updated Welcome Banner with welcome text on left and resume upload + button on right -->
-<div class="welcome-banner">
-    <div class="welcome-left">
-        <h2>Welcome, <span id="user-name">IT Professional</span>!</h2>
-        <p>
-            Complete your profile or upload your resume to get personalized job matches and career insights.
-        </p>
-    </div>
-    
-    <div class="welcome-right">
-        <button id="upload-resume-btn" class="btn btn-light">
-            <i class="fas fa-file-upload"></i> Upload Resume
-        </button>
-        <input type="file" id="resume-upload-input" accept=".pdf,.doc,.docx" style="display: none;" />
-        
-        <button id="update-profile-btn" class="btn btn-primary">
-            <i class="fas fa-user-edit"></i> Update Your Profile
-        </button>
-        
-        <div id="resume-status" class="resume-status"></div>
-    </div>
-</div>
+            <!-- Updated Welcome Banner with welcome text on left and resume upload + button on right -->
+            <div class="welcome-banner">
+                <div class="welcome-left">
+                    <h2>Welcome, <span id="user-name">IT Professional</span>!</h2>
+                    <p>
+                        Complete your profile or upload your resume to get personalized
+                        job matches and career insights.
+                    </p>
+                </div>
+
+                <div class="welcome-right">
+                    <button id="upload-resume-btn" class="btn btn-light">
+                        <i class="fas fa-file-upload"></i> Upload Resume
+                    </button>
+                    <input type="file" id="resume-upload-input" accept=".pdf,.doc,.docx" style="display: none" />
+
+                    <button id="update-profile-btn" class="btn btn-primary">
+                        <i class="fas fa-user-edit"></i> Update Your Profile
+                    </button>
+
+                    <div id="resume-status" class="resume-status"></div>
+                </div>
+            </div>
 
             <!-- Dashboard Metrics -->
             <div class="section-header">
@@ -431,9 +434,7 @@
                         Experience
                     </div>
                     <div class="profile-nav-item" data-section="domains">Domains</div>
-                    <div class="profile-nav-item" data-section="preferences">
-                        Preferences
-                    </div>
+
                     <div class="profile-nav-item" data-section="analytics">
                         Analytics
                     </div>
@@ -505,70 +506,6 @@
                     </div>
                 </div>
 
-                <div id="preferences-section" class="profile-section-content hidden">
-                    <div class="section-header">
-                        <h3>Job Preferences</h3>
-                    </div>
-
-                    <div class="preference-group">
-                        <div class="preference-item">
-                            <h4>Preferred Role</h4>
-                            <div class="preference-value" id="preferred-role-value">
-                                Not specified
-                            </div>
-                        </div>
-                        <button class="edit-preference" data-field="preferred-role">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                    </div>
-
-                    <div class="preference-group">
-                        <div class="preference-item">
-                            <h4>Location Preference</h4>
-                            <div class="preference-value" id="location-preference-value">
-                                Not specified
-                            </div>
-                        </div>
-                        <button class="edit-preference" data-field="location-preference">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                    </div>
-
-                    <div class="preference-group">
-                        <div class="preference-item">
-                            <h4>Salary Expectation</h4>
-                            <div class="preference-value" id="salary-preference-value">
-                                Not specified
-                            </div>
-                        </div>
-                        <button class="edit-preference" data-field="salary-preference">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                    </div>
-
-                    <div class="preference-group">
-                        <div class="preference-item">
-                            <h4>Work Type</h4>
-                            <div class="preference-value" id="work-type-value">
-                                Not specified
-                            </div>
-                        </div>
-                        <button class="edit-preference" data-field="work-type">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                    </div>
-
-                    <div class="preference-group">
-                        <div class="preference-item">
-                            <h4>Certifications</h4>
-                            <div class="preference-value" id="certifications-value">No</div>
-                        </div>
-                        <button class="edit-preference" data-field="certifications">
-                            <i class="fas fa-pen"></i>
-                        </button>
-                    </div>
-                </div>
-
                 <div id="analytics-section" class="profile-section-content hidden">
                     <div class="section-header">
                         <h3>Profile Analytics</h3>
@@ -630,19 +567,21 @@
                 <div class="form-tab" data-tab="skills-experience">
                     Skills & Experience
                 </div>
-                <div class="form-tab" data-tab="preferences">Preferences</div>
             </div>
 
+            <!-- Updated Profile Form HTML -->
+            <!-- Updated Profile Form HTML -->
+            <!-- Updated Profile Form HTML -->
             <form id="profile-form">
                 <!-- Basic Info Tab -->
                 <div id="basic-info-tab" class="form-tab-content active">
                     <div class="form-group">
-                        <label for="user-name-input">Full Name</label>
+                        <label for="user-name-input">Full Name <span class="required">*</span></label>
                         <input type="text" id="user-name-input" required placeholder="Your name" />
                     </div>
 
                     <div class="form-group">
-                        <label for="user-email">Email</label>
+                        <label for="user-email">Email <span class="required">*</span></label>
                         <input type="email" id="user-email" required placeholder="Your email" />
                     </div>
 
@@ -665,7 +604,6 @@
                         </select>
                     </div>
 
-
                     <div class="form-actions">
                         <button type="button" class="btn-secondary">Cancel</button>
                         <button type="button" class="btn-primary next-tab" data-next="skills-experience">
@@ -677,40 +615,8 @@
                 <!-- Skills & Experience Tab -->
                 <div id="skills-experience-tab" class="form-tab-content">
                     <div class="form-group">
-                        <div class="role-skills-container">
-                            <div class="role-selection">
-                                <label for="role-selector">Select Your Role</label>
-                                <select id="role-selector">
-                                    <option value="">Select a role to see common skills</option>
-                                    <option value="frontend">Frontend Developer</option>
-                                    <option value="backend">Backend Developer</option>
-                                    <option value="fullstack">Full Stack Developer</option>
-                                    <option value="devops">DevOps Engineer</option>
-                                    <option value="data">Data Scientist</option>
-                                    <option value="mobile">Mobile Developer</option>
-                                    <option value="ui">UI/UX Designer</option>
-                                </select>
-                            </div>
-                            
-                            <div class="skills-selection" id="skills-selection">
-                                <label>Select Skills (or add your own below)</label>
-                                <div class="skills-chips" id="skills-chips"></div>
-                            </div>
-                            
-                            <div class="custom-skills">
-                                <label for="custom-skill-input">Add Custom Skills</label>
-                                <div class="custom-skill-input-container">
-                                    <input type="text" id="custom-skill-input" placeholder="Type a skill and press Enter" />
-                                    <button type="button" id="add-custom-skill"><i class="fas fa-plus"></i></button>
-                                </div>
-                            </div>
-                            
-                            <div class="selected-skills">
-                                <label>Your Selected Skills</label>
-                                <div class="selected-skills-chips" id="selected-skills-chips"></div>
-                                <input type="hidden" id="selected-skills-input" name="selected-skills" />
-                            </div>
-                        </div>
+                        <label for="user-skills">Your Skills (comma separated)</label>
+                        <input type="text" id="user-skills" placeholder="e.g., JavaScript, React, Node.js" />
                     </div>
 
                     <div class="form-group">
@@ -719,161 +625,18 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="user-job-title">Current Job Title</label>
-                        <input type="text" id="user-job-title" placeholder="e.g., Software Developer" />
-                    </div>
-
-
-                    <div class="form-group">
                         <label for="user-current-salary">Current Salary ($)</label>
-                        <input type="number" id="user-current-salary" placeholder="e.g., 85000" />
-                    </div>
-
-                    <div class="form-group">
-                        <label>Do you have any certifications?</label>
-                        <select id="user-certifications">
-                            <option value="false">No</option>
-                            <option value="true">Yes</option>
-                        </select>
+                        <input type="number" id="user-current-salary" step="100" min="5000" placeholder="e.g., 85000" />
                     </div>
 
                     <div class="form-actions">
                         <button type="button" class="btn-secondary prev-tab" data-prev="basic-info">
                             <i class="fas fa-arrow-left"></i> Previous
                         </button>
-                        <button type="button" class="btn-primary next-tab" data-next="preferences">
-                            Next <i class="fas fa-arrow-right"></i>
+                        <button type="submit" class="btn-primary submit-profile">
+                            Save Profile <i class="fas fa-check"></i>
                         </button>
                     </div>
-                </div>
-
-                <!-- Preferences Tab -->
-                <div id="preferences-tab" class="form-tab-content">
-                    <div class="form-group">
-                        <label for="user-role">Target Role</label>
-                        <input type="text" id="user-role" placeholder="e.g., Senior Developer, Data Scientist" />
-                    </div>
-
-                    <div class="form-group">
-                        <label for="user-location-preference">Location Preference</label>
-                        <select id="user-location-preference">
-                            <option value="">Select Location Preference</option>
-                            <option value="Remote">Remote</option>
-                            <option value="Hybrid">Hybrid</option>
-                            <option value="On-site">On-site</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="user-work-type">Preferred Work Type</label>
-                        <select id="user-work-type">
-                            <option value="">Select Work Type</option>
-                            <option value="Full-time">Full-time</option>
-                            <option value="Part-time">Part-time</option>
-                            <option value="Contract">Contract</option>
-                            <option value="Freelance">Freelance</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="user-salary-expectation">Expected Salary ($)</label>
-                        <input type="number" id="user-salary-expectation" placeholder="e.g., 100000" />
-                    </div>
-
-                    <div class="form-group">
-                        <label>Are you willing to relocate?</label>
-                        <select id="user-willing-to-relocate">
-                            <option value="false">No</option>
-                            <option value="true">Yes</option>
-                        </select>
-                    </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn-secondary prev-tab" data-prev="skills-experience">
-                            <i class="fas fa-arrow-left"></i> Previous
-                        </button>
-                        <button type="submit" class="btn-primary">Save Profile</button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Skill Modal -->
-    <div id="add-skill-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add New Skill</h2>
-            <form id="add-skill-form">
-                <div class="form-group">
-                    <label for="skill-name">Skill Name</label>
-                    <input type="text" id="skill-name" required placeholder="e.g., React, Python, AWS" />
-                </div>
-
-                <div class="form-group">
-                    <label for="skill-level">Skill Level</label>
-                    <select id="skill-level" required>
-                        <option value="">Select Level</option>
-                        <option value="Beginner">Beginner</option>
-                        <option value="Intermediate">Intermediate</option>
-                        <option value="Advanced">Advanced</option>
-                        <option value="Expert">Expert</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="skill-experience">Years of Experience</label>
-                    <input type="number" id="skill-experience" step="0.5" min="0" placeholder="e.g., 2.5" />
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary">Cancel</button>
-                    <button type="submit" class="btn-primary">Add Skill</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Add Experience Modal -->
-    <div id="add-experience-modal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Add Work Experience</h2>
-            <form id="add-experience-form">
-                <div class="form-group">
-                    <label for="job-title">Job Title</label>
-                    <input type="text" id="job-title" required placeholder="e.g., Software Developer" />
-                </div>
-
-                <div class="form-group">
-                    <label for="company-name">Company</label>
-                    <input type="text" id="company-name" required placeholder="e.g., TechCorp Inc." />
-                </div>
-
-                <div class="form-group">
-                    <label for="job-start-date">Start Date</label>
-                    <input type="date" id="job-start-date" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="job-end-date">End Date</label>
-                    <input type="date" id="job-end-date" />
-                </div>
-
-                <div class="checkbox-group">
-                    <input type="checkbox" id="current-position" />
-                    <label for="current-position">I currently work here</label>
-                </div>
-
-                <div class="form-group">
-                    <label for="job-description">Job Description</label>
-                    <textarea id="job-description"
-                        placeholder="Describe your responsibilities and achievements..."></textarea>
-                </div>
-
-                <div class="form-actions">
-                    <button type="button" class="btn-secondary">Cancel</button>
-                    <button type="submit" class="btn-primary">Add Experience</button>
                 </div>
             </form>
         </div>
@@ -896,17 +659,22 @@
     <input type="file" id="csv-file-input" accept=".csv" style="display: none" />
 
     <!-- JavaScript Files -->
+
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
     <script src="js/api.js"></script>
+    <script src="js/app.js"></script>
     <script src="js/data.js"></script>
     <script src="js/matching.js"></script>
     <script src="js/roadmap.js"></script>
     <script src="js/profile.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/ui.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/storage-manager.js"></script>
+    <script src="js/resume-processor.js"></script>
     <script src="js/profile-modifications.js"></script>
+    <script src="js/profile-form-handler.js"></script>
+    <script src="js/form-validation-fixes.js"></script>
 </body>
 
 </html>

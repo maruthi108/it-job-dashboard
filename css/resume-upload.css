@@ -1,0 +1,129 @@
+/* Resume upload styles for TechCareerMatch */
+
+/* Drag and drop styles */
+.welcome-banner.drag-over {
+  background: linear-gradient(90deg, #2980b9, #2c3e50);
+  box-shadow: 0 0 15px rgba(52, 152, 219, 0.8);
+  transition: all 0.3s ease;
+}
+
+.welcome-banner.drag-over .welcome-right {
+  transform: scale(1.05);
+  transition: transform 0.3s ease;
+}
+
+/* Resume status styles */
+.resume-status {
+  transition: all 0.3s ease;
+}
+
+.resume-file {
+  background-color: rgba(255, 255, 255, 0.9);
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  animation: slideIn 0.3s ease-out;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.resume-filename {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+
+.resume-filesize {
+  color: #666;
+  font-size: 12px;
+}
+
+.resume-remove {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.2s ease;
+}
+
+.resume-remove:hover {
+  transform: scale(1.2);
+}
+
+/* Error message for resume upload */
+.upload-error {
+  background-color: rgba(231, 76, 60, 0.1);
+  color: #e74c3c;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Animation for resume status */
+@keyframes slideIn {
+  from {
+      opacity: 0;
+      transform: translateY(10px);
+  }
+  to {
+      opacity: 1;
+      transform: translateY(0);
+  }
+}
+
+/* Styling for prompt in welcome message when no resume is present */
+.resume-prompt {
+  font-style: italic;
+  opacity: 0.8;
+  font-size: 14px;
+  margin-top: 5px;
+  animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+      opacity: 0;
+  }
+  to {
+      opacity: 0.8;
+  }
+}
+
+/* Enhanced button states */
+.btn-light:active {
+  transform: scale(0.97);
+}
+
+.resume-processing {
+  background-color: rgba(52, 152, 219, 0.1);
+  color: #3498db;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  animation: pulse 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse {
+  0% {
+      opacity: 0.6;
+  }
+  50% {
+      opacity: 1;
+  }
+  100% {
+      opacity: 0.6;
+  }
+}

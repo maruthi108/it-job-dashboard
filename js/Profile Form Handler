@@ -1,0 +1,139 @@
+/**
+ * Updated Profile Form Handler for TechCareerMatch
+ * Removes preferences section and adds proper form submission handling
+ */
+
+// This function should be called from UI.init or similar initialization function
+function setupProfileFormHandlers() {
+  // Get the profile form
+  const profileForm = document.getElementById('profile-form');
+  
+  if (!profileForm) {
+      console.error('Profile form not found');
+      return;
+  }
+  
+  // Add submit handler
+  profileForm.addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      try {
+          // Show loading notification
+          Utils.showNotification(
+              'Saving',
+              'Saving your profile...',
+              'info',
+              2000
+          );
+          
+          // Get form data
+          const formData = {
+              name: document.getElementById('user-name-input').value,
+              email: document.getElementById('user-email').value,
+              location: document.getElementById('user-location-input').value,
+              education: document.getElementById('user-education').value,
+              skills: document.getElementById('user-skills').value,
+              experience: document.getElementById('user-experience').value,
+              currentSalary: document.getElementById('user-current-salary').value
+          };
+          
+          // Validate form - only name and email are required
+          if (!formData.name || !formData.email) {
+              Utils.showNotification(
+                  'Error',
+                  'Name and email are required fields.',
+                  'error'
+              );
+              
+              // Switch to the basic info tab if validation fails
+              const basicInfoTab = document.querySelector('[data-tab="basic-info"]');
+              if (basicInfoTab) {
+                  basicInfoTab.click();
+              }
+              
+              return;
+          }
+          
+          if (!Utils.isValidEmail(formData.email)) {
+              Utils.showNotification(
+                  'Error',
+                  'Please enter a valid email address.',
+                  'error'
+              );
+              
+              // Switch to the basic info tab if validation fails
+              const basicInfoTab = document.querySelector('[data-tab="basic-info"]');
+              if (basicInfoTab) {
+                  basicInfoTab.click();
+              }
+              
+              return;
+          }
+          
+          // Save profile using DataManager or StorageManager
+          const result = await DataManager.saveProfile(formData);
+          
+          if (result) {
+              // Update UI with new profile data
+              await ProfileManager.loadUserProfile();
+              
+              // Show success notification
+              Utils.showNotification(
+                  'Success',
+                  'Profile updated successfully.',
+                  'success'
+              );
+              
+              // Close modal
+              UI.closeModal('profile-modal');
+              
+              // Refresh dashboard if needed
+              if (typeof UI.refreshDashboard === 'function') {
+                  UI.refreshDashboard();
+              }
+          } else {
+              Utils.showNotification(
+                  'Error',
+                  'Failed to update profile.',
+                  'error'
+              );
+          }
+      } catch (error) {
+          console.error('Error saving profile:', error);
+          
+          Utils.showNotification(
+              'Error',
+              'An error occurred while saving your profile.',
+              'error'
+          );
+      }
+  });
+  
+  // Set up cancel button
+  const cancelButton = profileForm.querySelector('.btn-secondary');
+  if (cancelButton) {
+      cancelButton.addEventListener('click', function() {
+          UI.closeModal('profile-modal');
+      });
+  }
+  
+  console.log('Profile form handlers set up successfully');
+}
+
+// Add this function to the UI initialization
+if (typeof UI === 'object' && typeof UI.init === 'function') {
+  const originalUIInit = UI.init;
+  
+  UI.init = async function() {
+      const result = await originalUIInit.apply(this, arguments);
+      setupProfileFormHandlers();
+      return result;
+  };
+} else {
+  // Fallback if UI object is not available yet
+  document.addEventListener('DOMContentLoaded', function() {
+      if (typeof UI === 'object' && typeof UI.init === 'function') {
+          setupProfileFormHandlers();
+      }
+  });
+}
