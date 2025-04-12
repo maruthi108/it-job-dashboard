@@ -1,0 +1,223 @@
+/* Responsive Stylesheet for TechCareerMatch */
+
+/* Large screens (desktops) */
+@media (max-width: 1400px) {
+  .container {
+      padding: 20px 15px;
+  }
+  
+  .roadmap-container {
+      flex-direction: column;
+  }
+  
+  .roadmap-sidebar {
+      flex: 0 0 auto;
+      margin-bottom: 20px;
+  }
+}
+
+/* Medium screens (laptops, tablets) */
+@media (max-width: 1024px) {
+  .metrics-container {
+      grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .charts-container {
+      grid-template-columns: 1fr;
+  }
+  
+  .insights-container {
+      grid-template-columns: 1fr;
+  }
+  
+  .skills-dashboard {
+      grid-template-columns: 1fr;
+  }
+  
+  .profile-sections {
+      flex-direction: column;
+  }
+  
+  .profile-nav {
+      flex: 0 0 auto;
+      margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+  }
+  
+  .profile-nav-item {
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+      margin-bottom: 0;
+  }
+}
+
+/* Small screens (tablets, large phones) */
+@media (max-width: 768px) {
+  header {
+      height: auto;
+      flex-direction: column;
+      padding: 15px;
+  }
+  
+  .logo {
+      margin-bottom: 15px;
+  }
+  
+  nav {
+      width: 100%;
+      overflow-x: auto;
+      padding-bottom: 5px;
+  }
+  
+  .nav-item {
+      padding: 0 15px;
+      height: 50px;
+      white-space: nowrap;
+  }
+  
+  .user-menu {
+      display: none;
+  }
+  
+  .welcome-banner {
+      flex-direction: column;
+      text-align: center;
+  }
+  
+  .welcome-text {
+      margin-bottom: 20px;
+  }
+  
+  .section-header {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  
+  .section-header .view-all,
+  .section-header .action-buttons {
+      margin-top: 10px;
+  }
+  
+  .action-buttons {
+      display: flex;
+      width: 100%;
+  }
+  
+  .action-buttons button {
+      flex: 1;
+  }
+  
+  .metrics-container {
+      grid-template-columns: 1fr;
+  }
+  
+  .filters {
+      flex-direction: column;
+  }
+  
+  .filter-group {
+      width: 100%;
+  }
+  
+  #all-jobs-container {
+      grid-template-columns: 1fr;
+  }
+  
+  .profile-header {
+      flex-direction: column;
+      text-align: center;
+  }
+  
+  .profile-photo {
+      margin-right: 0;
+      margin-bottom: 20px;
+  }
+  
+  .profile-actions {
+      margin-top: 20px;
+      flex-direction: row;
+  }
+  
+  .profile-details {
+      justify-content: center;
+  }
+  
+  .experience-info {
+      flex-direction: column;
+  }
+  
+  .experience-stat {
+      margin: 10px 0;
+  }
+  
+  .experience-item {
+      flex-direction: column;
+  }
+  
+  .experience-period {
+      margin-bottom: 10px;
+  }
+  
+  .modal-content {
+      margin: 20px auto;
+      padding: 20px;
+  }
+}
+
+/* Extra small screens (phones) */
+@media (max-width: 480px) {
+  .logo h1 {
+      font-size: 18px;
+  }
+  
+  .nav-item {
+      padding: 0 10px;
+      font-size: 14px;
+  }
+  
+  .welcome-text h2 {
+      font-size: 20px;
+  }
+  
+  .section-header h2 {
+      font-size: 18px;
+  }
+  
+  .job-header {
+      flex-direction: column;
+      align-items: flex-start;
+  }
+  
+  .company-logo {
+      margin-bottom: 10px;
+  }
+  
+  .job-match {
+      margin-top: 10px;
+  }
+  
+  .form-tabs {
+      flex-direction: column;
+  }
+  
+  .form-tab {
+      padding: 10px;
+      border-bottom: 1px solid var(--border-color);
+  }
+  
+  .form-actions {
+      flex-direction: column;
+  }
+  
+  .form-actions button {
+      margin-bottom: 10px;
+      width: 100%;
+  }
+  
+  .notification {
+      min-width: 250px;
+  }
+}
