@@ -476,9 +476,11 @@ function setupRoleBasedSkills() {
   const selectedCount = document.getElementById('selected-count');
   
   if (roleSelector && skillsChips && selectedSkillsChips && customSkillInput && addCustomSkillBtn) {
+    console.log('setupRoleBasedSkills: roleSelector and containers found');
     // When role changes, update available skills
-    roleSelector.addEventListener('change', function() {
+  roleSelector.addEventListener('change', function() {
       const selectedRole = this.value;
+      console.log('Role selected:', selectedRole);
       
       // Update role display
       if (roleDisplay) {
@@ -495,9 +497,11 @@ function setupRoleBasedSkills() {
       
       // Get skills for selected role
       const roleSkills = skillsData[selectedRole] || [];
+      console.log('Role skills:', roleSkills);
       
       // Get currently selected skills
       const selectedSkills = getSelectedSkills();
+      console.log('Selected skills:', selectedSkills);
       
       if (roleSkills.length === 0) {
         skillsChips.innerHTML = '<div class="empty-state">No skills found for this role</div>';
@@ -506,17 +510,27 @@ function setupRoleBasedSkills() {
         const availableSkills = roleSkills.filter(skill => 
           !selectedSkills.some(s => s.toLowerCase() === skill.toLowerCase())
         );
+        console.log('Available skills:', availableSkills);
         
         if (availableSkills.length === 0) {
           skillsChips.innerHTML = '<div class="empty-state">All skills for this role already selected</div>';
         } else {
+          // Use document fragment to batch DOM updates for performance
+          const fragment = document.createDocumentFragment();
           availableSkills.forEach(skill => {
             const skillChip = createSkillChip(skill, false);
-            skillsChips.appendChild(skillChip);
+            fragment.appendChild(skillChip);
           });
+          skillsChips.appendChild(fragment);
         }
       }
     });
+    
+    // Trigger change event on page load to populate skills if role is pre-selected
+    if (roleSelector.value) {
+      console.log('Triggering change event on page load for role:', roleSelector.value);
+      roleSelector.dispatchEvent(new Event('change'));
+    }
     
     // Add custom skill
     const addCustomSkill = function() {
@@ -1126,103 +1140,88 @@ async function saveProfile(formData, hasResume) {
   try {
     // Show loading notification
     showNotification('Saving', 'Saving your profile...', 'info');
-    
-    // Simulate API call delay
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    // Check if we're using the DataManager object directly or just simulating
-    if (typeof DataManager !== 'undefined' && typeof DataManager.updateUserProfile === 'function') {
-      // Real implementation using DataManager
-      
-      // Update profile
-      const profileData = {
+
+    // Prepare data to send to backend
+    const dataToSend = {
+      profile: {
         name: formData.name,
         email: formData.email,
         location: formData.location,
         education: formData.education,
         jobTitle: formData.jobTitle,
-        experience: parseFloat(formData.experience) || 0
-      };
-      
-      // Update the profile
-      await DataManager.updateUserProfile(profileData);
-      
-      // Update skills if provided
-      const skillsInput = formData.skills;
-      if (skillsInput) {
-        // Parse skills from comma-separated list
-        const skillsArray = skillsInput.split(',').map(skill => skill.trim()).filter(Boolean);
-        
-        // Get existing skills
-        const existingSkills = await DataManager.getUserSkills();
-        const existingSkillNames = existingSkills.map(skill => skill.name.toLowerCase());
-        
-        // Add new skills
-        for (const skill of skillsArray) {
-          if (!existingSkillNames.includes(skill.toLowerCase())) {
-            await DataManager.addUserSkill({
-              name: skill,
-              level: 'Intermediate',
-              experience: Math.min(parseFloat(formData.experience) || 2, 2) // Cap skill experience at user's total or 2 years 
-            });
-          }
-        }
-      }
-      
-      // Update preferences only if full form was filled
-      if (!hasResume) {
-        const preferencesData = {
-          targetRole: formData.targetRole,
-          locationPreference: formData.locationPreference,
-          workType: formData.workType,
-          salaryExpectation: parseFloat(formData.salaryExpectation) || 0,
-          willingToRelocate: formData.willingToRelocate === 'true'
-        };
-        
-        await DataManager.updateUserPreferences(preferencesData);
-      }
-      
-      // Reload user profile if method exists
-      if (typeof ProfileManager !== 'undefined' && typeof ProfileManager.loadUserProfile === 'function') {
-        await ProfileManager.loadUserProfile();
-      }
-      
-      // Update dashboard if method exists
-      if (typeof UI !== 'undefined' && typeof UI.refreshDashboard === 'function') {
-        UI.refreshDashboard();
-      }
-    } else {
-      // Simulation for demo purposes
-      console.log('Profile data saved:', formData);
-      
-      // Update displayed name if exists
-      const userNameDisplay = document.getElementById('user-name');
-      if (userNameDisplay) {
-        userNameDisplay.textContent = formData.name;
+        experience: parseFloat(formData.experience) || 0,
+        skills: formData.skills,
+        targetRole: formData.targetRole,
+        locationPreference: formData.locationPreference,
+        workType: formData.workType,
+        salaryExpectation: parseFloat(formData.salaryExpectation) || 0,
+        willingToRelocate: formData.willingToRelocate === 'true'
+      },
+      resume_text: ''
+    };
+
+    // If resume is uploaded, try to read its text content
+    if (hasResume) {
+      const resumeInput = document.getElementById('resume-upload-input');
+      if (resumeInput && resumeInput.files.length > 0) {
+        const file = resumeInput.files[0];
+        dataToSend.resume_text = await readFileAsText(file);
       }
     }
-    
+
+    // Send POST request to backend /analyze endpoint
+    const response = await fetch('http://localhost:5000/analyze', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(dataToSend)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.statusText}`);
+    }
+
+    const analysisResult = await response.json();
+
+    // TODO: Update UI with analysisResult (e.g., display visualizations)
+    console.log('Analysis result:', analysisResult);
+
     // Close modal
     const modal = document.getElementById('profile-modal');
     if (modal) {
       modal.style.display = 'none';
     }
-    
+
     // Show success notification
     showNotification(
       'Success',
-      'Profile updated successfully.',
+      'Profile updated and analysis completed successfully.',
       'success'
     );
-    
+
   } catch (error) {
     console.error('Error saving profile:', error);
     showNotification(
       'Error',
-      'Failed to update profile. Please try again.',
+      `Failed to update profile or analyze data: ${error.message}`,
       'error'
     );
   }
+}
+
+/**
+ * Helper function to read file as text
+ * @param {File} file - File object
+ * @returns {Promise<string>} - File text content
+ */
+function readFileAsText(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = e => resolve(e.target.result);
+    reader.onerror = e => reject(e);
+    reader.readAsText(file);
+  });
 }
 
 /**
@@ -1303,4 +1302,116 @@ function showNotification(title, message, type = 'info', duration = 5000) {
       notification.remove();
     }
   }, duration);
+  // Add this code at the end of your profile-modifications.js file or in a new <script> tag in your HTML
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the role selector dropdown
+  const roleSelector = document.getElementById('role-selector');
+  
+  // Define skills for different roles
+  const roleSkills = {
+    'DevOps Engineer': ['Docker', 'Kubernetes', 'AWS', 'CI/CD', 'Jenkins', 'Terraform', 'Linux', 'Shell Scripting', 'Monitoring', 'Git'],
+    'Frontend Developer': ['HTML', 'CSS', 'JavaScript', 'React', 'Angular', 'Vue.js', 'TypeScript', 'SASS/SCSS', 'Redux', 'Webpack'],
+    'Backend Developer': ['Node.js', 'Python', 'Java', 'PHP', 'SQL', 'NoSQL', 'Express', 'Django', 'Spring Boot', 'RESTful APIs'],
+    'Full Stack Developer': ['JavaScript', 'Node.js', 'React', 'HTML/CSS', 'SQL', 'MongoDB', 'Git', 'Express', 'REST APIs', 'Python'],
+    'Data Scientist': ['Python', 'R', 'SQL', 'Machine Learning', 'Data Visualization', 'Pandas', 'TensorFlow', 'Tableau', 'Big Data', 'Statistics'],
+    'Mobile App Developer': ['React Native', 'Flutter', 'Swift', 'Kotlin', 'iOS', 'Android', 'Mobile UI Design', 'Firebase', 'App Store Optimization', 'Push Notifications'],
+    'UI/UX Designer': ['Figma', 'Adobe XD', 'Sketch', 'UI Design', 'UX Research', 'Wireframing', 'Prototyping', 'User Testing', 'Typography', 'Color Theory']
+  };
+  
+  // Add change event listener to the role selector
+  if (roleSelector) {
+    roleSelector.addEventListener('change', function() {
+      const selectedRole = this.value;
+      const skillsContainer = document.querySelector('.skills-chips');
+      
+      if (!skillsContainer) return;
+      
+      // Clear previous skills
+      skillsContainer.innerHTML = '';
+      
+      // If no role selected or role not found in our mapping
+      if (!selectedRole || !roleSkills[selectedRole]) {
+        skillsContainer.innerHTML = '<div class="empty-state">Select a role to see relevant skills</div>';
+        return;
+      }
+      
+      // Display skills for the selected role
+      roleSkills[selectedRole].forEach(skill => {
+        const skillChip = document.createElement('div');
+        skillChip.className = 'skill-chip';
+        skillChip.dataset.skill = skill;
+        skillChip.innerHTML = `
+          <span>${skill}</span>
+          <button type="button" class="add-skill" title="Add skill"><i class="fas fa-plus"></i></button>
+        `;
+        
+        // Make the entire chip clickable to add
+        skillChip.addEventListener('click', function() {
+          addSkillToSelected(skill);
+          this.remove();
+        });
+        
+        skillsContainer.appendChild(skillChip);
+      });
+    });
+  }
+  
+  // Helper function to add a skill to selected skills
+  function addSkillToSelected(skill) {
+    const selectedSkillsChips = document.getElementById('selected-skills-chips');
+    const selectedSkillsInput = document.getElementById('selected-skills-input');
+    
+    if (!selectedSkillsChips || !selectedSkillsInput) return;
+    
+    // Remove empty state if present
+    const emptyState = selectedSkillsChips.querySelector('.empty-state');
+    if (emptyState) {
+      emptyState.remove();
+    }
+    
+    // Create and add skill chip
+    const skillChip = document.createElement('div');
+    skillChip.className = 'skill-chip';
+    skillChip.dataset.skill = skill;
+    skillChip.innerHTML = `
+      <span class="skill-name">${skill}</span>
+      <button type="button" class="remove-skill" title="Remove skill"><i class="fas fa-times"></i></button>
+    `;
+    
+    // Add remove button handler
+    const removeBtn = skillChip.querySelector('.remove-skill');
+    if (removeBtn) {
+      removeBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        skillChip.remove();
+        updateSelectedSkillsInput();
+      });
+    }
+    
+    selectedSkillsChips.appendChild(skillChip);
+    
+    // Update hidden input
+    updateSelectedSkillsInput();
+  }
+  
+  // Helper function to update the hidden input with selected skills
+  function updateSelectedSkillsInput() {
+    const selectedSkillsChips = document.getElementById('selected-skills-chips');
+    const selectedSkillsInput = document.getElementById('selected-skills-input');
+    
+    if (!selectedSkillsChips || !selectedSkillsInput) return;
+    
+    const skills = [];
+    const skillChips = selectedSkillsChips.querySelectorAll('.skill-chip');
+    
+    skillChips.forEach(chip => {
+      if (chip.dataset.skill) {
+        skills.push(chip.dataset.skill);
+      }
+    });
+    
+    selectedSkillsInput.value = skills.join(', ');
+  }
+});
 }

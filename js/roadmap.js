@@ -76,30 +76,46 @@ const RoadmapManager = {
             // Get user profile and skills
             const profile = await DataManager.getUserProfile();
             const userSkills = await DataManager.getUserSkills();
-            const preferences = await DataManager.getUserPreferences();
+            const preferences = await DataManager.getUserPreferences() || {};
             
-            // Get standard roadmap data
-            const standardRoadmap = await API.getCareerRoadmap();
+            // Determine the role to use
+            const targetRole = preferences.targetRole || 'default';
             
-            // Determine current position in career path
+            // Get role-specific roadmap data
+            let careerPath, timeline, experienceSalary;
+            
+            // Check if we have RoleRoadmaps available
+            if (typeof RoleRoadmaps !== 'undefined') {
+                careerPath = RoleRoadmaps.getCareerPath(targetRole);
+                timeline = RoleRoadmaps.getTimeline(targetRole);
+                experienceSalary = RoleRoadmaps.getExperienceSalaryData(targetRole);
+            } else {
+                // Fallback to standard roadmap data
+                const standardRoadmap = await API.getCareerRoadmap();
+                careerPath = standardRoadmap.careerPath;
+                timeline = standardRoadmap.timeline;
+                experienceSalary = standardRoadmap.experienceSalary;
+            }
+            
+            // Customize career path based on user experience
             const experience = profile.experience || 0;
-            const careerPath = this._customizeCareerPath(standardRoadmap.careerPath, experience, preferences.targetRole);
+            const customizedCareerPath = this._customizeCareerPath(careerPath, experience, targetRole);
             
             // Generate skill timeline
-            const skillTimeline = this._generateSkillTimeline(userSkills, standardRoadmap.timeline);
+            const skillTimeline = this._generateSkillTimeline(userSkills, timeline);
             
             // Customize experience-salary chart
-            const experienceSalary = this._customizeExperienceSalaryChart(
-                standardRoadmap.experienceSalary, 
+            const customizedExperienceSalary = this._customizeExperienceSalaryChart(
+                experienceSalary, 
                 experience, 
                 profile.currentSalary || 0,
-                preferences.targetRole
+                targetRole
             );
             
             return {
-                careerPath,
+                careerPath: customizedCareerPath,
                 timeline: skillTimeline,
-                experienceSalary
+                experienceSalary: customizedExperienceSalary
             };
         } catch (error) {
             console.error('Error generating personalized roadmap:', error);

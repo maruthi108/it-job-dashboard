@@ -22,7 +22,7 @@ const MatchingEngine = {
      * @param {number} limit - Number of jobs to return
      * @returns {Promise<Array>} Top job matches
      */
-    getTopMatches: async function(limit = 3) {
+    getTopMatches: async function(limit = 4) {
         try {
             const jobs = await API.getJobMatches();
             return jobs.slice(0, limit);

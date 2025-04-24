@@ -28,6 +28,10 @@
 
     <!-- LocalForage for client-side storage -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.10.0/localforage.min.js"></script>
+
+    <!-- Add these before the closing </head> tag -->
+    <link rel="stylesheet" href="css/skill-analysis-dashboard.css" />
+
 </head>
 
 <body>
@@ -232,7 +236,7 @@
                             <option value="Backend Developer">Backend Developer</option>
                             <option value="Data Scientist">Data Scientist</option>
                             <option value="DevOps Engineer">DevOps Engineer</option>
-                            <option value="Mobile Developer">Mobile Developer</option>
+                            <option value="Mobile Developer">Mobile App Developer</option>
                         </select>
                     </div>
 
@@ -369,6 +373,18 @@
                 <div class="roadmap-content">
                     <div class="roadmap-header">
                         <h3>Skill Development Timeline</h3>
+                        <h3>Career Path for <span id="career-path-role">Your Target Role</span></h3>
+                        <select id="role-selector">
+                            <option value="">Select a role</option>
+                            <option value="frontend">Frontend Developer</option>
+                            <option value="backend">Backend Developer</option>
+                            <option value="fullstack">Full Stack Developer</option>
+                            <option value="devops">DevOps Engineer</option>
+                            <option value="data">Data Scientist</option>
+                            <option value="mobile">Mobile App Developer</option>
+                            <option value="ui/ux">UI/UX Designer</option>
+                        </select>
+
                         <select id="timeline-filter">
                             <option value="6">Next 6 months</option>
                             <option value="12" selected>Next 12 months</option>
@@ -658,23 +674,47 @@
     <!-- Hidden file input for CSV import -->
     <input type="file" id="csv-file-input" accept=".csv" style="display: none" />
 
-    <!-- JavaScript Files -->
 
+    <!-- Core libraries and utilities first -->
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
-    <script src="js/api.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/data.js"></script>
-    <script src="js/matching.js"></script>
-    <script src="js/roadmap.js"></script>
-    <script src="js/profile.js"></script>
-    <script src="js/charts.js"></script>
-    <script src="js/ui.js"></script>
+
+    <!-- Storage management -->
     <script src="js/storage-manager.js"></script>
+    <!-- Storage Implementation -->
+    <script src="js/StorageService.js"></script>
+    <script src="js/profile-handler.js"></script>
+    <script src="js/storage-migration.js"></script>
+
+    <!-- Initialize App -->
+    <script src="js/app-init.js"></script>
+
+    <!-- Data handling and API -->
+    <script src="js/data.js"></script>
+    <script src="js/data/job_data.js"></script>
+    <script src="js/api.js"></script>
+
+    <!-- Core application features -->
+    <!-- Initialize App -->
+    <script src="js/app-init.js"></script>
+    <script src="js/matching.js"></script>
+    <script src="js/charts.js"></script>
+    <script src="js/roadmap.js"></script>
+    <script src="js/role-roadmaps.js"></script>
+    <script src="js/profile.js"></script>
+    <script src="js/profileManager.js"></script>
     <script src="js/resume-processor.js"></script>
+    <script src="js/skill-analysis-integration.js"></script>
+    
+
+    <!-- UI and form handling -->
+    <script src="js/ui.js"></script>
     <script src="js/profile-modifications.js"></script>
     <script src="js/profile-form-handler.js"></script>
     <script src="js/form-validation-fixes.js"></script>
+
+    <!-- Main application (should be loaded last) -->
+    <script src="js/app.js"></script>
 </body>
 
 </html>

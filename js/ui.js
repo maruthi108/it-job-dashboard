@@ -224,6 +224,14 @@ const UI = {
                 this.handleCsvFileUpload(e);
             });
         }
+        
+        // Role selector in roadmap
+        const roleSelector = document.getElementById('role-selector');
+        if (roleSelector) {
+            roleSelector.addEventListener('change', () => {
+                this.handleRoleSelection(roleSelector.value);
+            });
+        }
     },
     
     /**
@@ -423,22 +431,12 @@ const UI = {
             document.getElementById('user-email').value = profile.email || '';
             document.getElementById('user-location-input').value = profile.location || '';
             document.getElementById('user-education').value = profile.education || '';
-            document.getElementById('user-linkedin').value = profile.linkedin || '';
             
             // Skills & Experience
             document.getElementById('user-skills').value = skills.map(skill => skill.name).join(', ');
             document.getElementById('user-experience').value = profile.experience || '';
             document.getElementById('user-job-title').value = profile.jobTitle || '';
-            document.getElementById('user-domains').value = domains.map(domain => domain.name).join(', ');
             document.getElementById('user-current-salary').value = profile.currentSalary || '';
-            document.getElementById('user-certifications').value = preferences.certifications ? 'true' : 'false';
-            
-            // Preferences
-            document.getElementById('user-role').value = preferences.targetRole || '';
-            document.getElementById('user-location-preference').value = preferences.locationPreference || '';
-            document.getElementById('user-work-type').value = preferences.workType || '';
-            document.getElementById('user-salary-expectation').value = preferences.salaryExpectation || '';
-            document.getElementById('user-willing-to-relocate').value = preferences.willingToRelocate ? 'true' : 'false';
             
             // Switch to first tab
             this.switchProfileTab('basic-info');
@@ -458,18 +456,10 @@ const UI = {
                 email: document.getElementById('user-email').value,
                 location: document.getElementById('user-location-input').value,
                 education: document.getElementById('user-education').value,
-                linkedin: document.getElementById('user-linkedin').value,
                 skills: document.getElementById('user-skills').value,
                 experience: document.getElementById('user-experience').value,
                 jobTitle: document.getElementById('user-job-title').value,
-                domains: document.getElementById('user-domains').value,
-                currentSalary: document.getElementById('user-current-salary').value,
-                certifications: document.getElementById('user-certifications').value,
-                targetRole: document.getElementById('user-role').value,
-                locationPreference: document.getElementById('user-location-preference').value,
-                workType: document.getElementById('user-work-type').value,
-                salaryExpectation: document.getElementById('user-salary-expectation').value,
-                willingToRelocate: document.getElementById('user-willing-to-relocate').value
+                currentSalary: document.getElementById('user-current-salary').value
             };
             
             // Validate form
@@ -502,6 +492,9 @@ const UI = {
                 );
                 
                 this.closeModal('profile-modal');
+                
+                // Refresh dashboard if needed
+                this.refreshDashboard();
             } else {
                 Utils.showNotification(
                     'Error',
@@ -652,25 +645,6 @@ const UI = {
             document.getElementById('skills-count').textContent = dashboardData.skillsCount;
             document.getElementById('market-demand').textContent = dashboardData.marketDemand;
             document.getElementById('salary-potential').textContent = Utils.formatCurrency(dashboardData.salaryPotential);
-            
-            // Update profile completion
-            const completionText = document.getElementById('profile-completion-text');
-            if (completionText) {
-                completionText.textContent = `${dashboardData.profileCompletion}%`;
-            }
-            
-            const progressCircle = document.querySelector('.progress-ring-circle');
-            if (progressCircle) {
-                const radius = progressCircle.r.baseVal.value;
-                const circumference = radius * 2 * Math.PI;
-                progressCircle.style.strokeDasharray = `${circumference} ${circumference}`;
-                progressCircle.style.strokeDashoffset = circumference - (dashboardData.profileCompletion / 100) * circumference;
-            }
-            
-            const progressText = document.querySelector('.progress-text');
-            if (progressText) {
-                progressText.textContent = `${dashboardData.profileCompletion}%`;
-            }
             
             // Update top jobs
             this.renderTopJobs(dashboardData.topJobs);
@@ -1392,6 +1366,35 @@ const UI = {
                 2000
             );
             
+            // Get user preferences to determine target role
+            const preferences = await DataManager.getUserPreferences() || {};
+            const targetRole = preferences.targetRole || '';
+            
+            // Set the current role in the selector
+            const roleSelector = document.getElementById('role-selector');
+            if (roleSelector) {
+                // Find the best matching option
+                let bestMatch = '';
+                for (let i = 0; i < roleSelector.options.length; i++) {
+                    const option = roleSelector.options[i];
+                    if (targetRole.toLowerCase().includes(option.value.toLowerCase()) && 
+                        option.value.length > bestMatch.length) {
+                        bestMatch = option.value;
+                    }
+                }
+                
+                // Set the selected option
+                if (bestMatch) {
+                    roleSelector.value = bestMatch;
+                }
+            }
+            
+            // Update displayed role
+            const roleDisplay = document.getElementById('career-path-role');
+            if (roleDisplay && targetRole) {
+                roleDisplay.textContent = targetRole;
+            }
+            
             // Get roadmap data
             const roadmap = await RoadmapManager.generatePersonalizedRoadmap();
             
@@ -1408,6 +1411,72 @@ const UI = {
             Utils.showNotification(
                 'Error',
                 'Failed to load career roadmap.',
+                'error'
+            );
+        }
+    },
+    
+    /**
+     * Handle role selection for roadmap
+     * @param {string} role - Selected role
+     */
+    handleRoleSelection: async function(role) {
+        if (!role) return;
+        
+        try {
+            // Show loading notification
+            Utils.showNotification(
+                'Loading',
+                `Loading career roadmap for ${role}...`,
+                'info',
+                2000
+            );
+            
+            // Update displayed role
+            const roleDisplay = document.getElementById('career-path-role');
+            if (roleDisplay) {
+                roleDisplay.textContent = role;
+            }
+            
+            // Get roadmap data for the selected role
+            let roadmap;
+            
+            if (typeof RoleRoadmaps !== 'undefined') {
+                // Use the role-specific roadmap data
+                const careerPath = RoleRoadmaps.getCareerPath(role);
+                const timeline = RoleRoadmaps.getTimeline(role);
+                const experienceSalary = RoleRoadmaps.getExperienceSalaryData(role);
+                
+                // Get profile data
+                const profile = await DataManager.getUserProfile();
+                const experience = profile.experience || 0;
+                
+                // Customize career path based on experience
+                const customizedCareerPath = RoadmapManager._customizeCareerPath(
+                    careerPath, 
+                    experience, 
+                    role
+                );
+                
+                roadmap = {
+                    careerPath: customizedCareerPath,
+                    timeline: timeline,
+                    experienceSalary: experienceSalary
+                };
+            } else {
+                // Fall back to the personalized roadmap
+                roadmap = await RoadmapManager.generatePersonalizedRoadmap();
+            }
+            
+            // Render the roadmap
+            this.renderCareerPath(roadmap.careerPath);
+            this.renderRoadmapTimeline(roadmap.timeline);
+            ChartManager.createExperienceSalaryChart(roadmap.experienceSalary);
+        } catch (error) {
+            console.error('Error handling role selection:', error);
+            Utils.showNotification(
+                'Error',
+                'Failed to load roadmap for the selected role.',
                 'error'
             );
         }
