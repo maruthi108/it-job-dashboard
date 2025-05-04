@@ -1,147 +1,192 @@
 # TechCareerMatch
 
-A comprehensive career matching platform for IT professionals to find ideal job opportunities based on their skills, experience, and preferences.
+![TechCareerMatch Logo](assets/img/logo.png)
 
-## 📋 Project Overview
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![JavaScript](https://img.shields.io/badge/JavaScript-ES6-yellow.svg)](https://www.ecma-international.org/ecma-262/)
+[![Python](https://img.shields.io/badge/Python-3.7+-blue.svg)](https://www.python.org/)
+[![Data Analysis](https://img.shields.io/badge/Data%20Analysis-Pandas-green.svg)](https://pandas.pydata.org/)
 
-TechCareerMatch is a dynamic web application designed to help IT professionals with 2+ years of experience find their ideal job roles. The platform analyzes your skills, experience, and preferences to match you with the most suitable job opportunities in the tech industry.
+## 📋 Overview
 
-![Screenshot 2025-03-26 205709](https://github.com/user-attachments/assets/252e6bc2-a031-4b2f-94eb-7314e860bd75)
+TechCareerMatch is an intelligent career platform designed specifically for IT professionals. The application matches users with suitable job opportunities based on their skills, experience, and preferences, while providing valuable insights into skill gaps and market trends. Whether you're actively job hunting or planning your career growth, TechCareerMatch provides data-driven guidance for your professional journey.
 
-## ✨ Key Features
+### 🎯 Key Features
 
-- **Personalized Job Matching**: Analyzes your skill set and experience to find the most relevant job opportunities
-- **Skill Gap Analysis**: Identifies skills you need to acquire or improve for specific roles
-- **Career Roadmap**: Provides a customized career development path
-- **Real-time Job Openings**: Fetches current job listings from multiple platforms
-- **Detailed Job Insights**: Offers comprehensive information about salaries, required skills, and job trends
-- **Responsive Design**: Works seamlessly across desktop, tablet, and mobile devices
+- **Personalized Job Matching**: Sophisticated algorithm to match IT professionals with relevant job opportunities
+- **Skill Gap Analysis**: Identifies missing skills based on target roles and market demand
+- **Career Roadmap Planning**: Visualizes career progression paths and provides development timelines
+- **Resume Parsing**: Automatically extracts and analyzes skills from uploaded resumes
+- **Data Visualization**: Interactive charts and graphs showcasing job market trends and salary insights
+- **Profile Management**: Comprehensive profile management with skill tracking and work experience history
 
-## 🚀 Getting Started
+## 🚀 Live Demo
 
-### Prerequisites
+Try the live demo at [https://techcareermatch.example.com](https://techcareermatch.example.com)
 
-- Modern web browser (Chrome, Firefox, Safari, Edge)
-- Internet connection
-- Basic understanding of web technologies (for developers)
+## 🖼️ Screenshots
 
-### Installation for Developers
+<div align="center">
+  <img src="assets/img/screenshots/dashboard.png" alt="Dashboard" width="45%" />
+  <img src="assets/img/screenshots/skill-analysis.png" alt="Skill Analysis" width="45%" />
+</div>
 
-1. Clone the repository:
-```bash
-git clone https://github.com/maruthi108/it-job-dashboard.git
-cd techcareermatch
-```
+<div align="center">
+  <img src="assets/img/screenshots/job-matches.png" alt="Job Matches" width="45%" />
+  <img src="assets/img/screenshots/career-roadmap.png" alt="Career Roadmap" width="45%" />
+</div>
 
-2. Set up a local development server or open the `index.html` file in your browser:
-```bash
-# Using Python's built-in server
-python -m http.server 8000
-```
+## 🛠️ Technology Stack
 
-3. Access the application at `http://localhost:8000`
-
-## 💻 How It Works
-
-1. **Profile Setup**: Create your profile by adding your skills, experience, education, and preferences
-2. **Data Analysis**: The application analyzes a dataset of 5000+ job listings to find matches
-3. **Matching Algorithm**: Our proprietary algorithm compares your profile with job requirements
-4. **Real-time Integration**: We use Google Gemini API to fetch current job openings
-5. **Result Presentation**: View personalized job recommendations, skill gaps, and career roadmaps
-
-## 🔍 Features in Detail
-
-### Job Matching
-
-The application uses advanced algorithms to match your skills and experience with job requirements, calculating a match percentage for each position.
-
-### Skill Analysis
-
-Identifies your strongest skills and areas for improvement, with market demand indicators to help you focus your development efforts.
-
-### Career Roadmap
-
-Provides a personalized career path showing potential role progressions and the skills needed to advance.
-
-### Real-time Job Listings
-
-Integrates with job platforms via Google Gemini API to show you current openings for your recommended roles, with direct links to application pages.
-
-## 🛠️ Technical Architecture
-
-The application is built using:
-
-- **Frontend**: HTML5, CSS3, JavaScript
-- **Data Visualization**: Chart.js
-- **Local Storage**: LocalForage for client-side data persistence
-- **API Integration**: Google Gemini API for real-time job listings
-- **Responsive Design**: Media queries for multiple device support
-
-### Project Structure
-
-```
-techcareermatch/
-├── css/
-│   ├── styles.css          # Main stylesheet
-│   └── responsive.css      # Responsive design styles
-├── js/
-│   ├── app.js              # Main application initialization
-│   ├── api.js              # API functions
-│   ├── charts.js           # Data visualization
-│   ├── config.js           # Application configuration
-│   ├── data.js             # Data management
-│   ├── matching.js         # Job matching algorithms
-│   ├── profile.js          # User profile management
-│   ├── roadmap.js          # Career roadmap functionality
-│   ├── ui.js               # UI management
-│   └── utils.js            # Utility functions
-├── data/
-│   └── job_listings.csv    # Job listings dataset (5000 entries)
-├── index.html              # Main HTML file
-└── README.md               # This documentation
-```
+- **Frontend**: HTML5, CSS3, JavaScript (ES6+), Chart.js
+- **Data Visualization**: Chart.js, D3.js
+- **Data Analysis**: Python, Pandas, NumPy, Matplotlib, Seaborn
+- **Storage**: LocalForage for client-side persistence
+- **CSS Framework**: Custom responsive CSS
+- **File Handling**: Client-side File API
 
 ## 📊 Data Analysis
 
-The application analyzes job listings with the following attributes:
-- Years of experience required
-- Technical skills needed
-- Number of skills required
-- Industry domains
-- Preferred roles
-- Salary ranges
-- Education requirements
-- Certification requirements
-- Location preferences
-- Job duration expectations
+The application uses sophisticated data analysis techniques to:
 
-## 🔄 Future Enhancements
+1. Match user profiles with suitable job opportunities
+2. Identify skill gaps based on market demand
+3. Generate personalized career development paths
+4. Analyze salary trends across roles and experience levels
+5. Create skill correlation matrices to recommend complementary skills
 
-- **Machine Learning Integration**: Enhanced matching using ML algorithms
-- **Resume Parsing**: Automatic skill extraction from uploaded resumes
-- **Interview Preparation**: Tools to help prepare for interviews in matched roles
-- **Networking Features**: Connect with professionals in target companies
-- **Mobile Application**: Dedicated mobile apps for iOS and Android
+## ⚡ Getting Started
 
-## 👥 Target Users
+### Prerequisites
 
-This application is designed primarily for:
-- IT professionals with 2+ years of experience
-- Tech workers looking to advance their careers
-- Professionals wanting to transition into new tech roles
-- Career advisors and recruiters in the tech industry
+- Python 3.7+ (for data preprocessing)
+- Modern web browser (Chrome, Firefox, Edge, Safari)
+- Node.js 14+ (optional, for local development server)
 
-## 📝 License
+### Installation
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/yourusername/techcareermatch.git
+   cd techcareermatch
+   ```
+
+2. Install Python dependencies for data processing:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Generate sample data (optional):
+   ```bash
+   cd preprocessing
+   python job_generator.py
+   ```
+
+4. Run the application:
+   ```bash
+   # Using Python's built-in server
+   python -m http.server 8000
+   
+   # Or using Node.js http-server
+   npx http-server -p 8000
+   ```
+
+5. Open your browser and navigate to `http://localhost:8000`
+
+## 📂 Project Structure
+
+```
+TechCareerMatch/
+├── index.html                 # Main HTML file
+├── css/                       # CSS stylesheets
+│   ├── styles.css             # Main stylesheet
+│   ├── responsive.css         # Responsive design
+│   └── skill-analysis.css     # Skill analysis dashboard
+├── js/                        # JavaScript files
+│   ├── app.js                 # Main application
+│   ├── api.js                 # API functions
+│   ├── charts.js              # Chart visualizations
+│   ├── data.js                # Data management
+│   ├── matching.js            # Job matching
+│   ├── profile.js             # Profile management
+│   ├── roadmap.js             # Career roadmap
+│   ├── storage-manager.js     # Storage management
+│   └── utils.js               # Utility functions
+├── data/                      # Data files
+│   └── job_listings.csv       # Job listings data
+├── preprocessing/             # Data processing scripts
+│   ├── data_validation.py     # Data validation
+│   ├── job_generator.py       # Sample data generator
+│   └── data_analysis.py       # Data analysis
+├── assets/                    # Static assets
+│   ├── img/                   # Images and icons
+│   └── icons/                 # Application icons
+└── docs/                      # Documentation
+    ├── user_guide.md          # User guide
+    └── setup_guide.md         # Setup instructions
+```
+
+## 🔧 Data Preprocessing
+
+The repository includes Python scripts for data preparation:
+
+1. `job_generator.py`: Creates realistic sample data with 5,000 job listings
+2. `data_validation.py`: Cleans and validates job data
+3. `data_analysis.py`: Generates insights and visualizations from job data
+
+To run the analysis and generate visualizations:
+
+```bash
+cd preprocessing
+python data_analysis.py --input ../data/job_listings.csv
+```
+
+## 💻 Usage
+
+1. **Profile Setup**:
+   - Create your profile with basic information
+   - Add your technical skills and experience
+   - Upload your resume for automatic skill extraction
+
+2. **Job Matching**:
+   - View personalized job matches based on your profile
+   - Filter jobs by role, location, experience level, and salary range
+   - Save interesting jobs for later
+
+3. **Skill Analysis**:
+   - View your skill distribution compared to market demand
+   - Identify skill gaps for your target role
+   - Get recommendations for skill acquisition
+
+4. **Career Roadmap**:
+   - Explore career progression paths
+   - View skill development timeline
+   - Analyze experience-salary relationships
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+Please check out our [contribution guidelines](CONTRIBUTING.md) for more details.
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 📞 Contact
+
+Project Link: [https://github.com/maruthi108/techcareermatch](https://github.com/yourusername/techcareermatch)
 
 ## 🙏 Acknowledgements
 
-- Chart.js for data visualization
-- LocalForage for client-side storage
-- All contributors who have helped with the development
-- Refer the PDF for preview
-
----
-
-This project is continually evolving. For questions, suggestions, or contributions, please contact us or open an issue on GitHub.
+- [Chart.js](https://www.chartjs.org/) for data visualization
+- [LocalForage](https://localforage.github.io/localForage/) for client-side storage
+- [Pandas](https://pandas.pydata.org/) for data analysis
+- [Font Awesome](https://fontawesome.com/) for icons
+- All the contributors who have helped this project evolve
