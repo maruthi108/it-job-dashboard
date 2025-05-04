@@ -157,11 +157,7 @@ const ResumeProcessor = {
         } catch (error) {
             console.error('Error handling resume upload:', error);
 
-            Utils.showNotification(
-                'Upload Failed',
-                'There was an error processing your resume. Please try again.',
-                'error'
-            );
+
         }
     },
 

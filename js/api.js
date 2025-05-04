@@ -390,7 +390,7 @@ const API = {
 
             // Get top job matches
             const jobs = await this.getJobMatches();
-            const topJobs = jobs.slice(0, 3);
+            const topJobs = jobs.slice(0, 4);
 
             // Get market demand data
             const skillDemandData = DataManager.getSampleSkillsData();

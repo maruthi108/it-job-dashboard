@@ -2145,3 +2145,180 @@ nav {
       transform: scale(1);
   }
 }
+
+/* Dashboard Metrics CSS Animations */
+
+/* Animation for metric updates */
+.metric-updating {
+  animation: pulse-update 0.8s ease;
+}
+
+@keyframes pulse-update {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.7;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* Loading state for metrics container */
+.metrics-loading .metric-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.metrics-loading .metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg, 
+    rgba(255, 255, 255, 0) 0%, 
+    rgba(255, 255, 255, 0.2) 50%, 
+    rgba(255, 255, 255, 0) 100%
+  );
+  animation: loading-shine 1.5s infinite;
+  z-index: 1;
+}
+
+@keyframes loading-shine {
+  to {
+    left: 100%;
+  }
+}
+
+/* Enhance the refresh data button */
+#refresh-data-btn {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+#refresh-data-btn:hover {
+  background-color: #2980b9;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#refresh-data-btn:active {
+  transform: translateY(0);
+}
+
+#refresh-data-btn i {
+  margin-right: 5px;
+  transition: transform 0.3s ease;
+}
+
+#refresh-data-btn:hover i {
+  animation: spin 1s ease;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Enhance metric cards */
+.metric-card {
+  transition: all 0.3s ease-in-out;
+}
+
+.metric-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Visual indicators for metrics */
+.metric-value {
+  position: relative;
+  padding-left: 5px;
+}
+
+/* Style each metric differently */
+#match-percentages.metric-value {
+  color: #3498db;
+}
+
+#skills-counts.metric-value {
+  color: #2ecc71;
+}
+
+#market-demands.metric-value {
+  color: #9b59b6;
+}
+
+#salary-potentials.metric-value {
+  color: #f39c12;
+}
+
+/* Add trending indicators */
+.metric-value.trending-up::after,
+.metric-value.trending-down::after {
+  content: '';
+  position: absolute;
+  right: -20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+}
+
+.metric-value.trending-up::after {
+  border-bottom: 8px solid #2ecc71;
+}
+
+.metric-value.trending-down::after {
+  border-top: 8px solid #e74c3c;
+}
+
+/* Enhance insight cards as well */
+.insight-card {
+  transition: all 0.3s ease;
+}
+
+.insight-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+.insight-card:hover .insight-icon {
+  transform: scale(1.1);
+}
+
+.insight-icon {
+  transition: transform 0.3s ease;
+}
+
+/* Add visual feedback when metrics update through auto-refresh */
+@keyframes subtle-update {
+  0% {
+    text-shadow: 0 0 0 rgba(52, 152, 219, 0);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 0 rgba(52, 152, 219, 0);
+  }
+}
+
+/* For the auto-refreshed metrics (subtle animation) */
+.metric-value {
+  transition: opacity 0.3s ease;
+}

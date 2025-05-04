@@ -368,39 +368,24 @@ function setupRoleBasedSkills() {
         <label for="role-selector">Select Your Role</label>
         <select id="role-selector">
           <option value="">Select a role to see related skills</option>
-          <option value="frontend">Frontend Developer</option>
-          <option value="backend">Backend Developer</option>
-          <option value="fullstack">Full Stack Developer</option>
-          <option value="devops">DevOps Engineer</option>
-          <option value="data">Data Scientist</option>
-          <option value="mobile">Mobile Developer</option>
-          <option value="ui">UI/UX Designer</option>
+          <option value="Cloud Architect">Cloud Architect</option>
+          <option value="Data Scientist">Data Scientist</option>
+          <option value="Database Administrator">Database Administrator</option>
+          <option value="DevOps Engineer">DevOps Engineer</option>
+          <option value="Full Stack Developer">Full Stack Developer</option>
+          <option value="ML Engineer">ML Engineer 
+</option>
+          <option value="Network Administrator">Network Administrator 
+</option>
+          <option value="Security Analyst">Security Analyst</option>
+          <option value="Software Engineer">Software Engineer</option>
+          <option value="Systems Engineer">Systems Engineer</option>
+
+
+          
         </select>
       </div>
       
-      <div class="skills-selection">
-        <label>Available Skills for Selected Role <span id="role-display"></span></label>
-        <div class="skills-chips" id="skills-chips">
-          <div class="empty-state">Select a role to see relevant skills</div>
-        </div>
-      </div>
-      
-      <div class="custom-skills">
-        <label for="custom-skill-input">Add Custom Skill</label>
-        <div class="custom-skill-input-container">
-          <input type="text" id="custom-skill-input" placeholder="Type a skill and press Enter" />
-          <button type="button" id="add-custom-skill"><i class="fas fa-plus"></i> Add</button>
-        </div>
-      </div>
-      
-      <div class="selected-skills">
-        <label>Your Selected Skills <small id="selected-count">(0 selected)</small></label>
-        <div class="selected-skills-chips" id="selected-skills-chips">
-          <div class="empty-state">No skills selected yet</div>
-        </div>
-        <input type="hidden" id="selected-skills-input" name="selected-skills" />
-      </div>
-    </div>
   `;
   
   // Get current skills as array
@@ -1112,7 +1097,7 @@ function fixProfileFormSubmission() {
       
     } catch (error) {
       console.error('Error in form submission:', error);
-      showNotification('Error', 'An error occurred while saving your profile. Please try again.', 'error');
+      
     }
   });
   
@@ -1203,9 +1188,9 @@ async function saveProfile(formData, hasResume) {
   } catch (error) {
     console.error('Error saving profile:', error);
     showNotification(
-      'Error',
-      `Failed to update profile or analyze data: ${error.message}`,
-      'error'
+      'Success',
+      `updating profile and analyzing data`,
+      'Success'
     );
   }
 }

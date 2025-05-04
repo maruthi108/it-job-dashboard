@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TechCareerMatch - Smart IT Job Finder</title>
 
+
     <!-- Favicon -->
     <link rel="icon" type="image/png" href="favicon.png" />
 
@@ -20,6 +21,8 @@
 
     <link rel="stylesheet" href="css/resume-upload.css" />
 
+    <link rel="stylesheet" href="css/job-market-dashboard.css" />
+
     <!-- Chart.js for data visualization -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
 
@@ -31,7 +34,6 @@
 
     <!-- Add these before the closing </head> tag -->
     <link rel="stylesheet" href="css/skill-analysis-dashboard.css" />
-
 </head>
 
 <body>
@@ -44,19 +46,22 @@
 
         <nav>
             <div class="nav-item active" data-content="dashboard">
-                <i class="fas fa-chart-bar"></i> Dashboard
+                <i class="fas fa-code"></i> Home
             </div>
             <div class="nav-item" data-content="jobs">
-                <i class="fas fa-briefcase"></i> Job Matches
+                <i class="fas fa-briefcase"></i> Jobs
             </div>
             <div class="nav-item" data-content="skills">
-                <i class="fas fa-code"></i> Skill Analysis
+                <i class="fas fa-chart-bar"></i>  Dashboard
             </div>
             <div class="nav-item" data-content="roadmap">
                 <i class="fas fa-map-signs"></i> Career Roadmap
             </div>
             <div class="nav-item" data-content="profile">
                 <i class="fas fa-user"></i> Profile
+            </div>
+            <div class="nav-item">
+                <a href="login.html"><i class="fas fa-sign-in-alt"></i> Login</a>
             </div>
         </nav>
 
@@ -108,28 +113,28 @@
                         <i class="fas fa-percentage"></i>
                     </div>
                     <div class="metric-body">
-                        <div class="metric-value" id="match-percentage">75%</div>
+                        <div class="metric-value" id="match-percentages">75%</div>
                         <div class="metric-label">Top Match Score</div>
                     </div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-icon" style="background-color: rgba(46, 204, 113, 0.1); color: #2ecc71">
-                        <i class="fas fa-code"></i>
+                        <i class="fas fa-chart-line"></i>
                     </div>
                     <div class="metric-body">
-                        <div class="metric-value" id="skills-count">8</div>
-                        <div class="metric-label">Skills Listed</div>
+                        <div class="metric-value" id="skills-counts">8</div>
+                        <div class="metric-label">Annual Growth For Your Role</div>
                     </div>
                 </div>
 
                 <div class="metric-card">
                     <div class="metric-icon" style="background-color: rgba(155, 89, 182, 0.1); color: #9b59b6">
-                        <i class="fas fa-chart-line"></i>
+                        <i class="fas fa-code"></i>
                     </div>
                     <div class="metric-body">
-                        <div class="metric-value" id="market-demand">82/100</div>
-                        <div class="metric-label">Skills Demand</div>
+                        <div class="metric-value" id="market-demands">82/100</div>
+                        <div class="metric-label">Profile Score</div>
                     </div>
                 </div>
 
@@ -138,7 +143,7 @@
                         <i class="fas fa-dollar-sign"></i>
                     </div>
                     <div class="metric-body">
-                        <div class="metric-value" id="salary-potential">$95,000</div>
+                        <div class="metric-value" id="salary-potentials">$95,000</div>
                         <div class="metric-label">Salary Potential</div>
                     </div>
                 </div>
@@ -146,7 +151,7 @@
 
             <!-- Top Job Matches -->
             <div class="section-header">
-                <h2>Top Job Matches</h2>
+                <h2>Latest Job Postings</h2>
                 <a href="#" class="view-all" data-nav="jobs"><i class="fas fa-arrow-right"></i> View All Matches</a>
             </div>
 
@@ -229,9 +234,7 @@
                         <label for="role-filter">Role</label>
                         <select id="role-filter">
                             <option value="all">All Roles</option>
-                            <option value="Full Stack Developer">
-                                Full Stack Developer
-                            </option>
+                            <option value="Full Stack Developer">Full Stack Developer</option>
                             <option value="Frontend Developer">Frontend Developer</option>
                             <option value="Backend Developer">Backend Developer</option>
                             <option value="Data Scientist">Data Scientist</option>
@@ -296,70 +299,382 @@
         </div>
 
         <!-- Skill Analysis Content -->
+        <!-- Updated Skills Content for index.html -->
+        <!-- Replace entire <div id="skills-content" class="content"> -->
+            
+            <!-- Skill Analysis Content -->
         <div id="skills-content" class="content">
-            <div class="section-header">
-                <h2>Skill Analysis</h2>
-                <div class="action-buttons">
-                    <button id="add-skill-btn" class="add-btn">
-                        <i class="fas fa-plus"></i> Add Skill
-                    </button>
-                    <button id="import-data-btn" class="update-btn">
-                        <i class="fas fa-file-import"></i> Import Data
-                    </button>
+            <h1 style="color: #3498db;">Job Market Analysis Dashboard</h1>
+                
+                <div class="filters">
+                    <input type="file" id="fileInput" accept=".csv">
+                    <select id="roleFilter">
+                        <option value="">All Roles</option>
+                    </select>
+                    <select id="stateFilter">
+                        <option value="">All States</option>
+                    </select>
+                    <select id="experienceFilter">
+                        <option value="">All Experience</option>
+                        <option value="0-3">0-3 Years</option>
+                        <option value="3-6">3-6 Years</option>
+                        <option value="6-10">6-10 Years</option>
+                        <option value="10+">10+ Years</option>
+                    </select>
+                </div>
+            
+                <div class="dashboard">
+                    <!-- KPI Cards -->
+                    <div class="card">
+                        <div class="kpi">
+                            <div class="kpi-value" id="totalJobs">0</div>
+                            <div class="kpi-label">Total Jobs</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="kpi">
+                            <div class="kpi-value" id="avgSalary">$0</div>
+                            <div class="kpi-label">Average Salary</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="kpi">
+                            <div class="kpi-value" id="avgExperience">0</div>
+                            <div class="kpi-label">Avg Experience (Years)</div>
+                        </div>
+                    </div>
+            
+                    <!-- Salary by Role Chart -->
+                    <div class="card card-large">
+                        <h2>Salary by Role</h2>
+                        <canvas id="salaryByRoleChart"></canvas>
+                    </div>
+            
+                    <!-- Top Skills Chart -->
+                    <div class="card">
+                        <h2>Top Skills</h2>
+                        <canvas id="topSkillsChart"></canvas>
+                    </div>
+            
+                    <!-- Experience vs Salary Scatter -->
+                    <div class="card card-large">
+                        <h2>Experience vs Salary</h2>
+                        <canvas id="experienceVsSalaryChart"></canvas>
+                    </div>
+            
+                    <!-- Jobs by State -->
+                    <div class="card">
+                        <h2>Jobs by State</h2>
+                        <canvas id="jobsByStateChart"></canvas>
+                    </div>
+            
+                    <!-- Education Impact -->
+                    <div class="card card-full">
+                        <h2>Education Level Impact on Salary</h2>
+                        <canvas id="educationImpactChart"></canvas>
+                    </div>
                 </div>
             </div>
-
-            <div class="skills-dashboard">
-                <div class="skill-analysis-card">
-                    <div class="card-header">
-                        <h3>Skill Distribution</h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="skill-radar-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="skill-analysis-card">
-                    <div class="card-header">
-                        <h3>Skill Gaps for Target Role</h3>
-                    </div>
-                    <div class="skill-gaps" id="skill-gaps-container">
-                        <!-- Skill gap items will be populated here -->
-                    </div>
-                </div>
-
-                <div class="skill-analysis-card">
-                    <div class="card-header">
-                        <h3>Your Skills Value</h3>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="skill-value-chart"></canvas>
-                    </div>
-                </div>
-
-                <div class="skill-analysis-card">
-                    <div class="card-header">
-                        <h3>Target Role Requirements</h3>
-                    </div>
-                    <div class="skill-gaps" id="target-skills-container">
-                        <!-- Target skills will be populated here -->
-                    </div>
-                </div>
-            </div>
-
-            <div class="section-header">
-                <h2>Recommended Learning Paths</h2>
-            </div>
-
-            <div class="learning-paths-container" id="learning-paths-container">
-                <!-- Learning path cards will be populated here -->
-            </div>
+            <script>
+                let data = [];
+                let charts = {};
+        
+                document.getElementById('fileInput').addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    Papa.parse(file, {
+                        header: true,
+                        dynamicTyping: true,
+                        complete: function(results) {
+                            data = results.data;
+                            initializeDashboard();
+                        }
+                    });
+                });
+        
+                function initializeDashboard() {
+                    populateFilters();
+                    updateDashboard();
+                    
+                    // Add event listeners for filters
+                    document.getElementById('roleFilter').addEventListener('change', updateDashboard);
+                    document.getElementById('stateFilter').addEventListener('change', updateDashboard);
+                    document.getElementById('experienceFilter').addEventListener('change', updateDashboard);
+                }
+        
+                function populateFilters() {
+                    const roles = [...new Set(data.map(item => item.preferred_role))].sort();
+                    const states = [...new Set(data.map(item => item.it_state))].sort();
+                    
+                    populateSelect('roleFilter', roles);
+                    populateSelect('stateFilter', states);
+                }
+        
+                function populateSelect(selectId, options) {
+                    const select = document.getElementById(selectId);
+                    select.innerHTML = '<option value="">All</option>';
+                    options.forEach(option => {
+                        if (option) {
+                            const optionElement = document.createElement('option');
+                            optionElement.value = option;
+                            optionElement.textContent = option;
+                            select.appendChild(optionElement);
+                        }
+                    });
+                }
+        
+                function updateDashboard() {
+                    const filteredData = filterData();
+                    updateKPIs(filteredData);
+                    updateCharts(filteredData);
+                }
+        
+                function filterData() {
+                    return data.filter(item => {
+                        const roleFilter = document.getElementById('roleFilter').value;
+                        const stateFilter = document.getElementById('stateFilter').value;
+                        const experienceFilter = document.getElementById('experienceFilter').value;
+                        
+                        if (roleFilter && item.preferred_role !== roleFilter) return false;
+                        if (stateFilter && item.it_state !== stateFilter) return false;
+                        if (experienceFilter) {
+                            const exp = item.years_experience;
+                            if (experienceFilter === '0-3' && exp > 3) return false;
+                            if (experienceFilter === '3-6' && (exp <= 3 || exp > 6)) return false;
+                            if (experienceFilter === '6-10' && (exp <= 6 || exp > 10)) return false;
+                            if (experienceFilter === '10+' && exp <= 10) return false;
+                        }
+                        return true;
+                    });
+                }
+        
+                function updateKPIs(filteredData) {
+                    document.getElementById('totalJobs').textContent = filteredData.length;
+                    
+                    const avgSalary = filteredData.reduce((sum, item) => sum + item.current_salary, 0) / filteredData.length;
+                    document.getElementById('avgSalary').textContent = '$' + Math.round(avgSalary).toLocaleString();
+                    
+                    const avgExperience = filteredData.reduce((sum, item) => sum + item.years_experience, 0) / filteredData.length;
+                    document.getElementById('avgExperience').textContent = avgExperience.toFixed(1);
+                }
+        
+                function updateCharts(filteredData) {
+                    createSalaryByRoleChart(filteredData);
+                    createTopSkillsChart(filteredData);
+                    createExperienceVsSalaryChart(filteredData);
+                    createJobsByStateChart(filteredData);
+                    createEducationImpactChart(filteredData);
+                }
+        
+                function createSalaryByRoleChart(filteredData) {
+                    const ctx = document.getElementById('salaryByRoleChart').getContext('2d');
+                    
+                    const roleData = {};
+                    filteredData.forEach(item => {
+                        if (!roleData[item.preferred_role]) {
+                            roleData[item.preferred_role] = [];
+                        }
+                        roleData[item.preferred_role].push(item.current_salary);
+                    });
+                    
+                    const labels = Object.keys(roleData);
+                    const averages = labels.map(role => {
+                        const salaries = roleData[role];
+                        return salaries.reduce((sum, salary) => sum + salary, 0) / salaries.length;
+                    });
+                    
+                    if (charts.salaryByRole) charts.salaryByRole.destroy();
+                    
+                    charts.salaryByRole = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Average Salary',
+                                data: averages,
+                                backgroundColor: '#3498db'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: value => '$' + value.toLocaleString()
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+        
+                function createTopSkillsChart(filteredData) {
+                    const ctx = document.getElementById('topSkillsChart').getContext('2d');
+                    
+                    const skills = {};
+                    filteredData.forEach(item => {
+                        if (item.technical_skills) {
+                            item.technical_skills.split(',').forEach(skill => {
+                                skill = skill.trim();
+                                skills[skill] = (skills[skill] || 0) + 1;
+                            });
+                        }
+                    });
+                    
+                    const sortedSkills = Object.entries(skills)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 10);
+                    
+                    if (charts.topSkills) charts.topSkills.destroy();
+                    
+                    charts.topSkills = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: sortedSkills.map(s => s[0]),
+                            datasets: [{
+                                label: 'Frequency',
+                                data: sortedSkills.map(s => s[1]),
+                                backgroundColor: '#2ecc71'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            indexAxis: 'y'
+                        }
+                    });
+                }
+        
+                function createExperienceVsSalaryChart(filteredData) {
+                    const ctx = document.getElementById('experienceVsSalaryChart').getContext('2d');
+                    
+                    if (charts.experienceVsSalary) charts.experienceVsSalary.destroy();
+                    
+                    charts.experienceVsSalary = new Chart(ctx, {
+                        type: 'scatter',
+                        data: {
+                            datasets: [{
+                                label: 'Experience vs Salary',
+                                data: filteredData.map(item => ({
+                                    x: item.years_experience,
+                                    y: item.current_salary
+                                })),
+                                backgroundColor: '#9b59b6'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Years of Experience'
+                                    }
+                                },
+                                y: {
+                                    title: {
+                                        display: true,
+                                        text: 'Salary'
+                                    },
+                                    ticks: {
+                                        callback: value => '$' + value.toLocaleString()
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+        
+                function createJobsByStateChart(filteredData) {
+                    const ctx = document.getElementById('jobsByStateChart').getContext('2d');
+                    
+                    const stateData = {};
+                    filteredData.forEach(item => {
+                        stateData[item.it_state] = (stateData[item.it_state] || 0) + 1;
+                    });
+                    
+                    const sortedStates = Object.entries(stateData)
+                        .sort((a, b) => b[1] - a[1])
+                        .slice(0, 10);
+                    
+                    if (charts.jobsByState) charts.jobsByState.destroy();
+                    
+                    charts.jobsByState = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: sortedStates.map(s => s[0]),
+                            datasets: [{
+                                label: 'Number of Jobs',
+                                data: sortedStates.map(s => s[1]),
+                                backgroundColor: '#e74c3c'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            indexAxis: 'y'
+                        }
+                    });
+                }
+        
+                function createEducationImpactChart(filteredData) {
+                    const ctx = document.getElementById('educationImpactChart').getContext('2d');
+                    
+                    const educationData = {};
+                    filteredData.forEach(item => {
+                        if (!educationData[item.education_level]) {
+                            educationData[item.education_level] = {
+                                salaries: [],
+                                certified: [],
+                                notCertified: []
+                            };
+                        }
+                        educationData[item.education_level].salaries.push(item.current_salary);
+                        if (item.has_certifications === 'True') {
+                            educationData[item.education_level].certified.push(item.current_salary);
+                        } else {
+                            educationData[item.education_level].notCertified.push(item.current_salary);
+                        }
+                    });
+                    
+                    const labels = Object.keys(educationData);
+                    const avgSalaries = labels.map(edu => {
+                        const salaries = educationData[edu].salaries;
+                        return salaries.reduce((sum, s) => sum + s, 0) / salaries.length;
+                    });
+                    
+                    if (charts.educationImpact) charts.educationImpact.destroy();
+                    
+                    charts.educationImpact = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: 'Average Salary',
+                                data: avgSalaries,
+                                backgroundColor: '#f39c12'
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            scales: {
+                                y: {
+                                    beginAtZero: true,
+                                    ticks: {
+                                        callback: value => '$' + value.toLocaleString()
+                                    }
+                                }
+                            }
+                        }
+                    });
+                }
+            </script>    
         </div>
+                
+            
 
         <!-- Career Roadmap Content -->
         <div id="roadmap-content" class="content">
             <div class="section-header">
-                <h2>Career Roadmap</h2>
+                <h2>Career Roadmap</h2>  
             </div>
 
             <div class="roadmap-container">
@@ -373,7 +688,10 @@
                 <div class="roadmap-content">
                     <div class="roadmap-header">
                         <h3>Skill Development Timeline</h3>
-                        <h3>Career Path for <span id="career-path-role">Your Target Role</span></h3>
+                        <h3>
+                            Career Path for
+                            <span id="career-path-role">Your Target Role</span>
+                        </h3>
                         <select id="role-selector">
                             <option value="">Select a role</option>
                             <option value="frontend">Frontend Developer</option>
@@ -603,20 +921,32 @@
 
                     <div class="form-group">
                         <label for="user-location-input">Location</label>
-                        <input type="text" id="user-location-input" placeholder="City, State or Country" />
+                        <select id="user-location-input">
+                            <option value="">Select a location</option>
+                            <option value="Arizona">Arizona</option>
+                            <option value="California">California</option>
+                            <option value="Colorado">Colorado</option>
+                            <option value="Florida">Florida</option>
+                            <option value="Georgia">Georgia</option>
+                            <option value="Illinois">Illinois</option>
+                            <option value="Massachusetts">Massachusetts</option>
+                            <option value="New York">New York</option>
+                            <option value="North Carolina">North Carolina</option>
+                            <option value="Oregon">Oregon</option>
+                            <option value="Texas">Texas</option>
+                            <option value="Utah">Utah</option>
+                            <option value="Virginia">Virginia</option>
+                            <option value="Washington">Washington</option>
+                        </select>
                     </div>
 
                     <div class="form-group">
                         <label for="user-education">Education Level</label>
                         <select id="user-education">
                             <option value="">Select Education Level</option>
-                            <option value="High School">High School</option>
-                            <option value="Associate's">Associate's Degree</option>
-                            <option value="Bachelor's">Bachelor's Degree</option>
-                            <option value="Master's">Master's Degree</option>
+                            <option value="Bachelors">Bachelor's Degree</option>
+                            <option value="Masters">Master's Degree</option>
                             <option value="PhD">PhD or Doctorate</option>
-                            <option value="Self-taught">Self-taught</option>
-                            <option value="Bootcamp">Coding Bootcamp</option>
                         </select>
                     </div>
 
@@ -674,7 +1004,6 @@
     <!-- Hidden file input for CSV import -->
     <input type="file" id="csv-file-input" accept=".csv" style="display: none" />
 
-
     <!-- Core libraries and utilities first -->
     <script src="js/config.js"></script>
     <script src="js/utils.js"></script>
@@ -684,10 +1013,10 @@
     <!-- Storage Implementation -->
     <script src="js/StorageService.js"></script>
     <script src="js/profile-handler.js"></script>
-    <script src="js/storage-migration.js"></script>
+    <script src="js/profile-store.js"></script>
+    <script src="js/profile-integration.js"></script>
 
     <!-- Initialize App -->
-    <script src="js/app-init.js"></script>
 
     <!-- Data handling and API -->
     <script src="js/data.js"></script>
@@ -696,25 +1025,35 @@
 
     <!-- Core application features -->
     <!-- Initialize App -->
-    <script src="js/app-init.js"></script>
     <script src="js/matching.js"></script>
+    <script src="js/dashboard-metrics-update.js"></script>
     <script src="js/charts.js"></script>
     <script src="js/roadmap.js"></script>
     <script src="js/role-roadmaps.js"></script>
+    <script src="js/career-roadmap-fix.js"></script>
+    <script src="js/roadmap-component-fix.js"></script>
+    <script src="js/roadmap-filter-fix.js"></script>
     <script src="js/profile.js"></script>
-    <script src="js/profileManager.js"></script>
     <script src="js/resume-processor.js"></script>
     <script src="js/skill-analysis-integration.js"></script>
+    <script src="standalone-career-roadmap.js"></script>
+    <script src="standalone-profile.js"></script>
     
 
     <!-- UI and form handling -->
     <script src="js/ui.js"></script>
+    <script src="js/ui-dashboard-integration.js"></script>
+    
     <script src="js/profile-modifications.js"></script>
     <script src="js/profile-form-handler.js"></script>
+    
+    
     <script src="js/form-validation-fixes.js"></script>
+
 
     <!-- Main application (should be loaded last) -->
     <script src="js/app.js"></script>
+
 </body>
 
 </html>

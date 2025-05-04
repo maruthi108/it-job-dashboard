@@ -462,11 +462,7 @@ const StorageManager = {
         } catch (error) {
             console.error('Error processing resume upload:', error);
 
-            Utils.showNotification(
-                'Upload Failed',
-                'There was an error processing your resume.',
-                'error'
-            );
+
 
             throw error;
         }

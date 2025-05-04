@@ -59,7 +59,7 @@ if (typeof ProfileManager !== 'undefined' && typeof ProfileManager.handleProfile
             } else {
                 Utils.showNotification(
                     'Error',
-                    'Failed to update profile. Please try again.',
+                    'update profile. Please try again.',
                     'error'
                 );
                 return false;
@@ -68,7 +68,7 @@ if (typeof ProfileManager !== 'undefined' && typeof ProfileManager.handleProfile
             console.error('Error in handleProfileFormSubmit:', error);
             Utils.showNotification(
                 'Error',
-                'An error occurred while updating your profile.',
+                'updating your profile.',
                 'error'
             );
             return false;

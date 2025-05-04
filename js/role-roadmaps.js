@@ -4,6 +4,66 @@
  */
 
 const RoleRoadmaps = {
+    /**
+     * Get career path steps for a specific role
+     * @param {string} role - The role name
+     * @returns {Array} Career path steps for the role
+     */
+    getCareerPath: function (role) {
+        const lowerRole = role.toLowerCase();
+
+        // Find the best matching role
+        let matchedRole = 'default';
+        for (const key in this.roadmapData) {
+            if (lowerRole.includes(key.toLowerCase())) {
+                matchedRole = key;
+                break;
+            }
+        }
+
+        return this.roadmapData[matchedRole].careerPath;
+    },
+
+    /**
+     * Get skill development timeline for a specific role
+     * @param {string} role - The role name
+     * @returns {Array} Timeline for the role
+     */
+    getTimeline: function (role) {
+        const lowerRole = role.toLowerCase();
+
+        // Find the best matching role
+        let matchedRole = 'default';
+        for (const key in this.roadmapData) {
+            if (lowerRole.includes(key.toLowerCase())) {
+                matchedRole = key;
+                break;
+            }
+        }
+
+        return this.roadmapData[matchedRole].timeline;
+    },
+
+    /**
+     * Get experience-salary data for a specific role
+     * @param {string} role - The role name
+     * @returns {Array} Experience-salary data for the role
+     */
+    getExperienceSalaryData: function (role) {
+        const lowerRole = role.toLowerCase();
+
+        // Find the best matching role
+        let matchedRole = 'default';
+        for (const key in this.roadmapData) {
+            if (lowerRole.includes(key.toLowerCase())) {
+                matchedRole = key;
+                break;
+            }
+        }
+
+        return this.roadmapData[matchedRole].experienceSalary;
+    },
+
     // Role-specific roadmap data
     roadmapData: {
         "default": {

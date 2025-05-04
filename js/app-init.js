@@ -6,84 +6,64 @@
 // Wait for DOM to be loaded
 document.addEventListener('DOMContentLoaded', async function() {
   try {
-    // Show loading notification
-    if (typeof Utils !== 'undefined' && typeof Utils.showNotification === 'function') {
+      // Show loading notification
       Utils.showNotification(
-        'Loading',
-        'Initializing TechCareerMatch...',
-        'info',
-        3000
+          'Loading',
+          'Initializing TechCareerMatch...',
+          'info',
+          3000
       );
-    }
-    
-    console.log('Initializing TechCareerMatch application...');
-    
-    // Initialize storage service first
-    if (typeof StorageService !== 'undefined') {
-      await StorageService.init();
-      console.log('StorageService initialized successfully');
-    } else {
-      console.warn('StorageService not found, using DataManager for storage');
-    }
-    
-    // Initialize modules in sequence
-    const modulesToInitialize = [
-      { name: 'DataManager', module: window.DataManager },
-      { name: 'API', module: window.API },
-      { name: 'MatchingEngine', module: window.MatchingEngine },
-      { name: 'RoadmapManager', module: window.RoadmapManager },
-      { name: 'ProfileHandler', module: window.ProfileHandler },
-      { name: 'ChartManager', module: window.ChartManager },
-      { name: 'ResumeProcessor', module: window.ResumeProcessor },
-      { name: 'UI', module: window.UI }
-    ];
-    
-    // Initialize each module if it exists
-    for (const moduleInfo of modulesToInitialize) {
-      if (moduleInfo.module && typeof moduleInfo.module.init === 'function') {
-        await moduleInfo.module.init();
-        console.log(`${moduleInfo.name} initialized successfully`);
+
+      console.log('Initializing TechCareerMatch application...');
+
+      // Initialize storage first
+      await StorageManager.init();
+      console.log('StorageManager initialized');
+
+      // Initialize data modules
+      await DataManager.init();
+      console.log('DataManager initialized');
+
+      // Initialize API and core functionality
+      await API.init();
+      console.log('API initialized');
+      await MatchingEngine.init();
+      console.log('MatchingEngine initialized');
+
+      // Initialize UI and presentation modules
+      await RoadmapManager.init();
+      console.log('RoadmapManager initialized');
+      await ProfileManager.init();
+      console.log('ProfileManager initialized');
+      await ChartManager.init();
+      console.log('ChartManager initialized');
+
+      // Load user profile
+      if (typeof ProfileManager.loadUserProfile === 'function') {
+          await ProfileManager.loadUserProfile();
+          console.log('User profile loaded');
       } else {
-        console.log(`Module ${moduleInfo.name} not found or has no init method`);
+          console.error('ProfileManager.loadUserProfile is not defined');
       }
-    }
-    
-    // Load user profile using ProfileHandler if available
-    if (typeof ProfileHandler !== 'undefined' && typeof ProfileHandler.loadUserProfile === 'function') {
-      await ProfileHandler.loadUserProfile();
-      console.log('User profile loaded successfully');
-    } else if (typeof ProfileManager !== 'undefined' && typeof ProfileManager.loadUserProfile === 'function') {
-      // Fallback to ProfileManager
-      await ProfileManager.loadUserProfile();
-      console.log('User profile loaded using ProfileManager');
-    }
-    
-    // Start with dashboard page
-    if (typeof UI !== 'undefined' && typeof UI.switchContent === 'function') {
-      UI.switchContent('dashboard');
-    }
-    
-    // Show success notification
-    if (typeof Utils !== 'undefined' && typeof Utils.showNotification === 'function') {
-      Utils.showNotification(
-        'Ready',
-        'TechCareerMatch initialized successfully!',
-        'success'
-      );
-    }
-    
-    console.log('All modules initialized successfully');
+
+      // Start with dashboard page
+      if (typeof UI !== 'undefined' && typeof UI.switchContent === 'function') {
+          UI.switchContent('dashboard');
+          console.log('Switched to dashboard view');
+      } else {
+          console.error('UI module not properly initialized');
+      }
+
+      console.log('TechCareerMatch initialization complete');
   } catch (error) {
-    console.error('Application initialization error:', error);
-    
-    // Show error notification
-    if (typeof Utils !== 'undefined' && typeof Utils.showNotification === 'function') {
-      Utils.showNotification(
-        'Error',
-        'Failed to initialize application. Please refresh the page.',
-        'error'
-      );
-    }
+      console.error('Application initialization error:', error);
+      
+      // Show error notification
+      if (typeof Utils !== 'undefined' && typeof Utils.showNotification === 'function') {
+          Utils.showNotification(
+              
+          );
+      }
   }
 });
 

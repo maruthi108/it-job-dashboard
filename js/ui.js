@@ -505,9 +505,7 @@ const UI = {
         } catch (error) {
             console.error('Error handling profile form submit:', error);
             Utils.showNotification(
-                'Error',
-                'An error occurred while saving your profile.',
-                'error'
+                
             );
         }
     },
@@ -559,9 +557,7 @@ const UI = {
         } catch (error) {
             console.error('Error handling add skill form submit:', error);
             Utils.showNotification(
-                'Error',
-                'An error occurred while adding the skill.',
-                'error'
+
             );
         }
     },
@@ -618,11 +614,7 @@ const UI = {
             }
         } catch (error) {
             console.error('Error handling add experience form submit:', error);
-            Utils.showNotification(
-                'Error',
-                'An error occurred while adding the experience.',
-                'error'
-            );
+
         }
     },
     
@@ -640,11 +632,6 @@ const UI = {
             
             const dashboardData = await API.getDashboardData();
             
-            // Update metrics
-            document.getElementById('match-percentage').textContent = `${dashboardData.topMatchScore}%`;
-            document.getElementById('skills-count').textContent = dashboardData.skillsCount;
-            document.getElementById('market-demand').textContent = dashboardData.marketDemand;
-            document.getElementById('salary-potential').textContent = Utils.formatCurrency(dashboardData.salaryPotential);
             
             // Update top jobs
             this.renderTopJobs(dashboardData.topJobs);
@@ -657,11 +644,7 @@ const UI = {
             ChartManager.createDashboardCharts(dashboardData);
         } catch (error) {
             console.error('Error loading dashboard:', error);
-            Utils.showNotification(
-                'Error',
-                'Failed to load dashboard data.',
-                'error'
-            );
+            
         }
     },
     
@@ -709,7 +692,7 @@ const UI = {
                         <h4>${job.company}</h4>
                         <span>${job.location}</span>
                     </div>
-                    <div class="job-match">${job.calculatedMatchScore || job.matchScore}% Match</div>
+                    
                 </div>
                 <h3 class="job-title">${job.title}</h3>
                 <div class="job-details">
@@ -724,8 +707,8 @@ const UI = {
                     </div>
                 </div>
                 <div class="job-skills">
-                    ${job.skills.slice(0, 3).map(skill => `<div class="skill-tag">${skill}</div>`).join('')}
-                    ${job.skills.length > 3 ? `<div class="skill-tag">+${job.skills.length - 3} more</div>` : ''}
+                    ${job.skills.slice(0, 4).map(skill => `<div class="skill-tag">${skill}</div>`).join('')}
+                    ${job.skills.length > 3 ? `<div class="skill-tag">+${job.skills.length - 4} more</div>` : ''}
                 </div>
             `;
             
@@ -760,11 +743,7 @@ const UI = {
             this.renderAllJobs(result.jobs, result.pagination);
         } catch (error) {
             console.error('Error loading job matches:', error);
-            Utils.showNotification(
-                'Error',
-                'Failed to load job matches.',
-                'error'
-            );
+
         }
     },
     
@@ -805,7 +784,7 @@ const UI = {
                         <h4>${job.company}</h4>
                         <span>${job.location}</span>
                     </div>
-                    <div class="job-match">${job.calculatedMatchScore || job.matchScore}% Match</div>
+                    
                 </div>
                 <h3 class="job-title">${job.title}</h3>
                 <div class="job-details">
@@ -952,14 +931,7 @@ const UI = {
         try {
             const job = await MatchingEngine.getJobDetails(jobId);
             
-            if (!job) {
-                Utils.showNotification(
-                    'Error',
-                    'Failed to load job details.',
-                    'error'
-                );
-                return;
-            }
+            
             
             // Check if job is saved
             const isSaved = await MatchingEngine.isJobSaved(jobId);
@@ -1047,11 +1019,7 @@ const UI = {
             this.openModal('job-details-modal');
         } catch (error) {
             console.error('Error showing job details:', error);
-            Utils.showNotification(
-                'Error',
-                'Failed to load job details.',
-                'error'
-            );
+            
         }
     },
     
@@ -1101,43 +1069,7 @@ const UI = {
     /**
      * Load skill analysis
      */
-    loadSkillAnalysis: async function() {
-        try {
-            Utils.showNotification(
-                'Loading',
-                'Analyzing your skills...',
-                'info',
-                2000
-            );
-            
-            // Get skill analysis data
-            const userSkills = await MatchingEngine.getUserSkillsWithInsights();
-            const skillGaps = await MatchingEngine.getSkillGaps();
-            const targetRoleSkills = await MatchingEngine.getTargetRoleSkills();
-            
-            // Create radar chart
-            ChartManager.createSkillRadarChart(userSkills);
-            
-            // Create skill value chart
-            ChartManager.createSkillValueChart(userSkills);
-            
-            // Render skill gaps
-            this.renderSkillGaps(skillGaps);
-            
-            // Render target role skills
-            this.renderTargetRoleSkills(targetRoleSkills);
-            
-            // Load learning paths
-            await this.loadLearningPaths();
-        } catch (error) {
-            console.error('Error loading skill analysis:', error);
-            Utils.showNotification(
-                'Error',
-                'Failed to load skill analysis.',
-                'error'
-            );
-        }
-    },
+    
     
     /**
      * Render skill gaps
@@ -1273,294 +1205,122 @@ const UI = {
         }
     },
     
-    /**
-     * Load learning paths
-     */
-    loadLearningPaths: async function() {
-        try {
-            const learningPaths = await API.getLearningPaths();
-            
-            // Render learning paths
-            this.renderLearningPaths(learningPaths);
-        } catch (error) {
-            console.error('Error loading learning paths:', error);
-        }
-    },
     
-    /**
-     * Render learning paths
-     * @param {Array} paths - Learning paths data
-     */
-    renderLearningPaths: function(paths) {
-        const container = document.getElementById('learning-paths-container');
-        
-        if (!container) return;
-        
-        container.innerHTML = '';
-        
-        if (paths.length === 0) {
-            container.innerHTML = `
-                <p class="empty-message">No learning paths available. Add more skills to get personalized recommendations.</p>
-            `;
-            return;
-        }
-        
-        // Sort by relevance (highest first)
-        const sortedPaths = [...paths].sort((a, b) => b.calculatedRelevance - a.calculatedRelevance);
-        
-        sortedPaths.forEach(path => {
-            const pathCard = document.createElement('div');
-            pathCard.className = 'learning-path-card';
-            pathCard.setAttribute('data-id', path.id);
-            
-            pathCard.innerHTML = `
-                <h3 class="learning-path-title">${path.title}</h3>
-                <p class="learning-path-info">${path.description}</p>
-                <div class="learning-path-skills">
-                    ${path.skills.map(skill => `
-                        <div class="learning-path-skill">
-                            <i class="fas fa-check-circle"></i> ${skill}
-                        </div>
-                    `).join('')}
-                </div>
-                <div class="learning-path-details">
-                    <div class="learning-path-detail">
-                        <div class="detail-value">${path.duration}</div>
-                        <div class="detail-label">Duration</div>
-                    </div>
-                    <div class="learning-path-detail">
-                        <div class="detail-value">${path.difficulty}</div>
-                        <div class="detail-label">Difficulty</div>
-                    </div>
-                    <div class="learning-path-detail">
-                        <div class="detail-value">${path.calculatedRelevance}%</div>
-                        <div class="detail-label">Relevance</div>
-                    </div>
-                </div>
-                <a href="#" class="view-path-btn">View Path</a>
-            `;
-            
-            container.appendChild(pathCard);
-        });
-        
-        // Add event listeners
-        const viewButtons = container.querySelectorAll('.view-path-btn');
-        viewButtons.forEach(button => {
-            button.addEventListener('click', (e) => {
-                e.preventDefault();
-                const pathId = e.target.closest('.learning-path-card').getAttribute('data-id');
-                this.switchContent('roadmap');
-            });
-        });
-    },
     
     /**
      * Load career roadmap
      */
-    loadCareerRoadmap: async function() {
-        try {
-            Utils.showNotification(
-                'Loading',
-                'Building your career roadmap...',
-                'info',
-                2000
-            );
-            
-            // Get user preferences to determine target role
-            const preferences = await DataManager.getUserPreferences() || {};
-            const targetRole = preferences.targetRole || '';
-            
-            // Set the current role in the selector
-            const roleSelector = document.getElementById('role-selector');
-            if (roleSelector) {
-                // Find the best matching option
-                let bestMatch = '';
-                for (let i = 0; i < roleSelector.options.length; i++) {
-                    const option = roleSelector.options[i];
-                    if (targetRole.toLowerCase().includes(option.value.toLowerCase()) && 
-                        option.value.length > bestMatch.length) {
-                        bestMatch = option.value;
-                    }
-                }
-                
-                // Set the selected option
-                if (bestMatch) {
-                    roleSelector.value = bestMatch;
-                }
-            }
-            
-            // Update displayed role
-            const roleDisplay = document.getElementById('career-path-role');
-            if (roleDisplay && targetRole) {
-                roleDisplay.textContent = targetRole;
-            }
-            
-            // Get roadmap data
-            const roadmap = await RoadmapManager.generatePersonalizedRoadmap();
-            
-            // Render career path
-            this.renderCareerPath(roadmap.careerPath);
-            
-            // Render timeline
-            this.renderRoadmapTimeline(roadmap.timeline);
-            
-            // Create experience-salary chart
-            ChartManager.createExperienceSalaryChart(roadmap.experienceSalary);
-        } catch (error) {
-            console.error('Error loading career roadmap:', error);
-            Utils.showNotification(
-                'Error',
-                'Failed to load career roadmap.',
-                'error'
-            );
+/**
+ * Load career roadmap
+ */
+/**
+ * Updated loadCareerRoadmap function for UI.js
+ * This replaces the existing loadCareerRoadmap method in the UI object
+ */
+loadCareerRoadmap: async function() {
+    try {
+        Utils.showNotification(
+            'Loading',
+            'Generating your career roadmap...',
+            'info',
+            2000
+        );
+        
+        // Get personalized roadmap data
+        const roadmapData = await RoadmapManager.generatePersonalizedRoadmap();
+        console.log('Roadmap data loaded:', roadmapData);
+        
+        if (!roadmapData || !roadmapData.careerPath || !roadmapData.timeline) {
+            throw new Error('Invalid roadmap data received');
         }
-    },
-    
-    /**
-     * Handle role selection for roadmap
-     * @param {string} role - Selected role
-     */
-    handleRoleSelection: async function(role) {
+        
+        // 1. Render career path
+        this.renderCareerPath(roadmapData.careerPath);
+        
+        // 2. Render timeline
+        this.renderRoadmapTimeline(roadmapData.timeline);
+        
+        // 3. Create experience-salary chart
+        if (roadmapData.experienceSalary) {
+            ChartManager.createExperienceSalaryChart(roadmapData.experienceSalary);
+        }
+        
+        // 4. Update role display
+        const roleSelector = document.getElementById('role-selector');
+        if (roleSelector) {
+            // If role is already selected, use that
+            if (roleSelector.value) {
+                document.getElementById('career-path-role').textContent = roleSelector.value;
+            } 
+            // Otherwise use target role from data if available
+            else if (roadmapData.experienceSalary && roadmapData.experienceSalary.targetRole) {
+                document.getElementById('career-path-role').textContent = roadmapData.experienceSalary.targetRole;
+                // Update the select dropdown to match
+                roleSelector.value = roadmapData.experienceSalary.targetRole;
+            }
+            
+            // Set up event listener for role selector if it's not already set
+            roleSelector.addEventListener('change', () => {
+                this.handleRoleSelection(roleSelector.value);
+            });
+        }
+        
+    } catch (error) {
+        console.error('Error loading career roadmap:', error);
+        
+        
+        // Display fallback content if something goes wrong
+        const careerPathContainer = document.getElementById('career-path-container');
+        if (careerPathContainer) {
+            careerPathContainer.innerHTML = `
+                <p class="empty-message">Unable to load career path data. Please try again later.</p>
+            `;
+        }
+        
+        const roadmapTimeline = document.getElementById('roadmap-timeline');
+        if (roadmapTimeline) {
+            roadmapTimeline.innerHTML = `
+                <p class="empty-message">Unable to load timeline data. Please try again later.</p>
+            `;
+        }
+    }
+},
+
+/**
+ * Handle role selection
+ * @param {string} role - Selected role
+ */
+handleRoleSelection: async function(role) {
+    try {
         if (!role) return;
         
-        try {
-            // Show loading notification
-            Utils.showNotification(
-                'Loading',
-                `Loading career roadmap for ${role}...`,
-                'info',
-                2000
-            );
-            
-            // Update displayed role
-            const roleDisplay = document.getElementById('career-path-role');
-            if (roleDisplay) {
-                roleDisplay.textContent = role;
-            }
-            
-            // Get roadmap data for the selected role
-            let roadmap;
-            
-            if (typeof RoleRoadmaps !== 'undefined') {
-                // Use the role-specific roadmap data
-                const careerPath = RoleRoadmaps.getCareerPath(role);
-                const timeline = RoleRoadmaps.getTimeline(role);
-                const experienceSalary = RoleRoadmaps.getExperienceSalaryData(role);
-                
-                // Get profile data
-                const profile = await DataManager.getUserProfile();
-                const experience = profile.experience || 0;
-                
-                // Customize career path based on experience
-                const customizedCareerPath = RoadmapManager._customizeCareerPath(
-                    careerPath, 
-                    experience, 
-                    role
-                );
-                
-                roadmap = {
-                    careerPath: customizedCareerPath,
-                    timeline: timeline,
-                    experienceSalary: experienceSalary
-                };
-            } else {
-                // Fall back to the personalized roadmap
-                roadmap = await RoadmapManager.generatePersonalizedRoadmap();
-            }
-            
-            // Render the roadmap
-            this.renderCareerPath(roadmap.careerPath);
-            this.renderRoadmapTimeline(roadmap.timeline);
-            ChartManager.createExperienceSalaryChart(roadmap.experienceSalary);
-        } catch (error) {
-            console.error('Error handling role selection:', error);
-            Utils.showNotification(
-                'Error',
-                'Failed to load roadmap for the selected role.',
-                'error'
-            );
-        }
-    },
-    
-    /**
-     * Render career path
-     * @param {Array} careerPath - Career path data
-     */
-    renderCareerPath: function(careerPath) {
-        const container = document.getElementById('career-path-container');
+        Utils.showNotification(
+            'Loading',
+            `Updating career path for ${role}...`,
+            'info',
+            2000
+        );
         
-        if (!container) return;
+        // Update the displayed role name
+        document.getElementById('career-path-role').textContent = role;
         
-        container.innerHTML = '';
+        // Get role-specific data
+        const careerPath = RoleRoadmaps.getCareerPath(role);
+        const timeline = RoleRoadmaps.getTimeline(role);
+        const experienceSalary = RoleRoadmaps.getExperienceSalaryData(role);
         
-        if (careerPath.length === 0) {
-            container.innerHTML = `
-                <p class="empty-message">No career path available. Complete your profile to see your personalized path.</p>
-            `;
-            return;
-        }
+        // Render the data
+        this.renderCareerPath(careerPath);
+        this.renderRoadmapTimeline(timeline);
         
-        careerPath.forEach(step => {
-            const stepElement = document.createElement('div');
-            stepElement.className = 'career-path-step';
-            
-            stepElement.innerHTML = `
-                <div class="step-indicator">${step.step}</div>
-                <div class="step-content">
-                    <div class="step-title ${step.current ? 'current-step' : ''}">${step.title}</div>
-                    <div class="step-description">${step.description}</div>
-                    ${step.alternativeTitle ? `
-                        <div class="step-alternative">
-                            <div class="alternative-title">Alternative: ${step.alternativeTitle}</div>
-                            <div class="alternative-description">${step.alternativeDescription}</div>
-                        </div>
-                    ` : ''}
-                </div>
-            `;
-            
-            container.appendChild(stepElement);
-        });
-    },
-    
-    /**
-     * Render roadmap timeline
-     * @param {Array} timeline - Timeline data
-     */
-    renderRoadmapTimeline: function(timeline) {
-        const container = document.getElementById('roadmap-timeline');
+        // Update the chart
+        ChartManager.createExperienceSalaryChart(experienceSalary);
         
-        if (!container) return;
+    } catch (error) {
+        console.error('Error handling role selection:', error);
         
-        container.innerHTML = '';
-        
-        if (timeline.length === 0) {
-            container.innerHTML = `
-                <p class="empty-message">No timeline available. Complete your profile to see your skill development timeline.</p>
-            `;
-            return;
-        }
-        
-        timeline.forEach(item => {
-            const timelineItem = document.createElement('div');
-            timelineItem.className = 'timeline-item';
-            
-            timelineItem.innerHTML = `
-                <div class="timeline-date">${item.date}</div>
-                <div class="timeline-title">${item.title}</div>
-                <div class="timeline-description">${item.description}</div>
-                ${item.existingSkills ? `
-                    <div class="timeline-existing-skills">
-                        <strong>Skills you already have:</strong> ${item.existingSkills.join(', ')}
-                    </div>
-                ` : ''}
-                <div class="timeline-skills">
-                    ${item.skills.map(skill => `<div class="skill-tag">${skill}</div>`).join('')}
-                </div>
-            `;
-            
-            container.appendChild(timelineItem);
-        });
-    },
+    }
+},
     
     /**
      * Handle timeline filter
