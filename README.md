@@ -20,20 +20,21 @@ TechCareerMatch is an intelligent career platform designed specifically for IT p
 - **Data Visualization**: Interactive charts and graphs showcasing job market trends and salary insights
 - **Profile Management**: Comprehensive profile management with skill tracking and work experience history
 
-## 🚀 Live Demo
-
-Try the live demo at [https://techcareermatch.example.com](https://techcareermatch.example.com)
 
 ## 🖼️ Screenshots
 
 <div align="center">
-  <img src="assets/img/screenshots/dashboard.png" alt="Dashboard" width="45%" />
-  <img src="assets/img/screenshots/skill-analysis.png" alt="Skill Analysis" width="45%" />
+  <img src="![Screenshot 2025-05-04 095911](https://github.com/user-attachments/assets/5a5040f2-1900-4c9c-8b02-4cda7380545c)
+" alt="Dashboard" width="45%" />
+  <img src="![Screenshot 2025-05-04 095954](https://github.com/user-attachments/assets/6dcebb50-85bc-4fc7-bd0f-22bf50889375)
+" alt="Job Market Analysis Dashboard" width="45%" />
 </div>
 
 <div align="center">
-  <img src="assets/img/screenshots/job-matches.png" alt="Job Matches" width="45%" />
-  <img src="assets/img/screenshots/career-roadmap.png" alt="Career Roadmap" width="45%" />
+  <img src="![Screenshot 2025-05-04 100255](https://github.com/user-attachments/assets/b9ae45c6-a01e-48ec-9068-9965a31950d3)
+" alt="Job Matches" width="45%" />
+  <img src="![Screenshot 2025-05-04 100410](https://github.com/user-attachments/assets/4b44a5eb-c3b5-4951-beca-4b50a2201ae7)
+" alt="Career Roadmap" width="45%" />
 </div>
 
 ## 🛠️ Technology Stack
